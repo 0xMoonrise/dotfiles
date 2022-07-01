@@ -1,6 +1,2 @@
 #!/bin/bash
-if [ -d /proc/sys/net/ipv4/conf/tun0 ]; then
-    echo "$({ ip -4 -br a sh dev tun0 | awk {'print $3'} | cut -f1 -d/; } 2>/dev/null)"
-else
-    echo "$({ ip -4 -br a sh dev enp2s0 | awk {'print $3'} | cut -f1 -d/; } 2>/dev/null)"
-fi
+hostname -I | grep -oE '((1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}(1?[0-9][0-9]?|2[0-4][0-9]|25[0-5])' | tr '\n' ' ' | awk '{print $(NF)}'
