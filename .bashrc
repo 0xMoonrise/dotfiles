@@ -25,12 +25,19 @@ export VISUAL=nano
 export EDITOR=nano
 
 
-function set_target
+set_target()
 {
     tmux set-environment target $1
 }
 
-function get_target
+get_target()
 {
     tmux show-environment target | awk -F '=' '{print $2}'
+}
+
+httpserver()
+{
+    [[ -z $1 ]] && port=8000 || port=$1
+    echo "http://$(ip -4 addr show eth0 | sed -n 's/.*inet \(.*\)\/24 brd.*/\1/p'):$port/"
+    python -m http.server $port 1>/dev/null
 }
