@@ -1,1 +1,3 @@
-/home/moon/Documents/test.txt
+This is a test to symlink
+test
+test2
