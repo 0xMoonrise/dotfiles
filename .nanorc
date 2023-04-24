@@ -1,7 +1,7 @@
+ include "/usr/share/nano-syntax-highlighting/*.nanorc"
  set linenumbers
  set autoindent
  set mouse
- set smooth
  set tabsize 4
  set numbercolor white
  set tabstospaces

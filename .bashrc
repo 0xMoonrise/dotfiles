@@ -5,6 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+#Useful aliases
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias st_htb='sudo openvpn ~/.vpn/starting_point_0xMoonrise.ovpn'
@@ -15,6 +16,7 @@ alias open='xdg-open'
 
 PS1='[\u@\h \W]\$ '
 
+#Environment variables for usability
 export PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/metasploit/tools/exploit/"
 export WEB_CONENT="/usr/share/seclists/Discovery/Web-Content/"
 export DNS="/usr/share/seclists/Discovery/DNS/"
