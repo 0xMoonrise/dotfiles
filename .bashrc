@@ -40,8 +40,8 @@ get_target()
 httpserver()
 {
     [[ -z $1 ]] && port=8000 || port=$1
-    local interface=$(ip -4 addr show eth0)
-    [[ ! -n interface ]] && interface=$(ip -4 addr show wlan0)
+    [[ -z $2 ]] && inte='eth0' || inte=$2
+    local interface=$(ip -4 addr show $inte)
     echo "http://$(sed -n 's/.*inet \(.*\)\/24 brd.*/\1/p' <<< $interface):$port/"
     python -m http.server $port 1>/dev/null
 }
