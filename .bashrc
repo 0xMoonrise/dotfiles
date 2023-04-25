@@ -11,8 +11,10 @@ alias grep='grep --color=auto'
 alias st_htb='sudo openvpn ~/.vpn/starting_point_0xMoonrise.ovpn'
 alias htb='sudo openvpn ~/.vpn/lab_0xMoonrise.ovpn'
 alias thm='sudo openvpn ~/.vpn/m4ll0c.ovpn'
-alias server='python -m http.server'
 alias open='xdg-open'
+alias nnano='tmux new-window nano'
+alias hnano='tmux split-window -h nano'
+alias vnano='tmux split-window -v nano'
 
 PS1='[\u@\h \W]\$ '
 
@@ -38,6 +40,8 @@ get_target()
 httpserver()
 {
     [[ -z $1 ]] && port=8000 || port=$1
-    echo "http://$(ip -4 addr show eth0 | sed -n 's/.*inet \(.*\)\/24 brd.*/\1/p'):$port/"
+    local interface=$(ip -4 addr show eth0)
+    [[ ! -n interface ]] && interface=$(ip -4 addr show wlan0)
+    echo "http://$(sed -n 's/.*inet \(.*\)\/24 brd.*/\1/p' <<< $interface):$port/"
     python -m http.server $port 1>/dev/null
 }
