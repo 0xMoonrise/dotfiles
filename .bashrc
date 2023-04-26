@@ -26,7 +26,6 @@ export LEAK_DB="/usr/share/seclists/Passwords/Leaked-Databases"
 export VISUAL=nano
 export EDITOR=nano
 
-
 set_target()
 {
     tmux set-environment target $1
