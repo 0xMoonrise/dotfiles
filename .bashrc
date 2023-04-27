@@ -39,8 +39,17 @@ get_target()
 httpserver()
 {
     [[ -z $1 ]] && port=8000 || port=$1
-    [[ $(< /sys/class/net/eth0/operstate) == "up" ]] && inte='eth0' || inte='wlan0'
-    local interface=$(ip -4 addr show $inte)
-    echo "http://$(sed -n 's/.*inet \(.*\)\/24 brd.*/\1/p' <<< $interface):$port/"
+    local INET=''
+
+    if [[ -f /sys/class/net/tun0/operstate ]]; then
+        INET='tun0'
+    elif [[ $(< /sys/class/net/eth0/operstate) == "up" ]]; then
+        INET='eth0'
+    else
+        INET='wlan0'
+    fi
+
+    local IP=$(ip -4 addr show $INET | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
+    echo "http://$IP:$port/"
     python -m http.server $port 1>/dev/null
 }

@@ -17,7 +17,7 @@ window:
 
   opacity: 0.75
   decorations: none
-#  startup_mode: Maximized
+  startup_mode: Fullscreen
 draw_bold_text_with_bright_colors: false
 cursor:
   style:
