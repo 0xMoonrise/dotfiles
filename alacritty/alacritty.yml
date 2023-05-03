@@ -4,8 +4,8 @@ shell:
 window:
 
   padding:
-    x: 1
-    y: 1
+    x: 0
+    y: 0
 
   dimensions:
     columns: 0
@@ -16,7 +16,7 @@ window:
     y: 0
 
   opacity: 0.75
-  decorations: none
+  decorations: None
   startup_mode: Fullscreen
 draw_bold_text_with_bright_colors: false
 cursor:

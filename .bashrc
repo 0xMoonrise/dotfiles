@@ -15,11 +15,14 @@ alias open='xdg-open'
 alias nnano='tmux new-window nano'
 alias hnano='tmux split-window -h nano'
 alias vnano='tmux split-window -v nano'
-
+alias gnome-config='nano ~/.config/gtk-3.0/gtk.css'
+alias tmux-config='nano ~/.config/tmux/tmux.conf'
+alias bash-config='nano ~/.bashrc && source ~/.bashrc'
 PS1='[\u@\h \W]\$ '
 
 #Environment variables for usability
 export PATH="/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/lib/jvm/default/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/opt/metasploit/tools/exploit/"
+export PATH="$PATH:/home/moon/.local/share/gem/ruby/3.0.0/bin"
 export WEB_CONENT="/usr/share/seclists/Discovery/Web-Content/"
 export DNS="/usr/share/seclists/Discovery/DNS/"
 export LEAK_DB="/usr/share/seclists/Passwords/Leaked-Databases"
