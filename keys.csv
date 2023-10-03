@@ -27,13 +27,13 @@ org.gnome.desktop.wm.keybindings	move-to-side-e	[]
 org.gnome.desktop.wm.keybindings	move-to-side-n	[]
 org.gnome.desktop.wm.keybindings	move-to-side-s	[]
 org.gnome.desktop.wm.keybindings	move-to-side-w	[]
-org.gnome.desktop.wm.keybindings	move-to-workspace-1	['<Super><Shift>Home']
+org.gnome.desktop.wm.keybindings	move-to-workspace-1	['<Shift><Super>1']
 org.gnome.desktop.wm.keybindings	move-to-workspace-10	[]
 org.gnome.desktop.wm.keybindings	move-to-workspace-11	[]
 org.gnome.desktop.wm.keybindings	move-to-workspace-12	[]
-org.gnome.desktop.wm.keybindings	move-to-workspace-2	[]
-org.gnome.desktop.wm.keybindings	move-to-workspace-3	[]
-org.gnome.desktop.wm.keybindings	move-to-workspace-4	[]
+org.gnome.desktop.wm.keybindings	move-to-workspace-2	['<Shift><Super>2']
+org.gnome.desktop.wm.keybindings	move-to-workspace-3	['<Shift><Super>3']
+org.gnome.desktop.wm.keybindings	move-to-workspace-4	['<Shift><Super>4']
 org.gnome.desktop.wm.keybindings	move-to-workspace-5	[]
 org.gnome.desktop.wm.keybindings	move-to-workspace-6	[]
 org.gnome.desktop.wm.keybindings	move-to-workspace-7	[]
@@ -180,9 +180,9 @@ org.gnome.settings-daemon.plugins.media-keys	volume-up-quiet-static	['<Alt>XF86A
 org.gnome.settings-daemon.plugins.media-keys	volume-up-static	['XF86AudioRaiseVolume', '<Ctrl>XF86AudioRaiseVolume']
 org.gnome.settings-daemon.plugins.media-keys	www	[]
 org.gnome.settings-daemon.plugins.media-keys	www-static	['XF86WWW']
-custom	'whatsapp.com'	'/bin/brave-browser web.whatsapp.com'	'<Super>q'
-custom	'youtube.com'	'/bin/brave-browser youtube.com'	'<Super>w'
+custom	'whatsapp.com'	'/bin/brave web.whatsapp.com'	'<Super>q'
+custom	'youtube.com'	'/bin/brave youtube.com'	'<Super>w'
 custom	'google.com'	'/bin/brave-browser google.com'	'<Super>bracketright'
-custom	'gmail.google.com'	'/bin/brave-browser gmail.google.com'	'<Super>bracketleft'
-custom	'terminal'	'alacritty'	'<Super>d'
-custom	'chat gpt'	'/bin/brave-browser https://chat.openai.com/'	'<Super>e'
+custom	'gmail.google.com'	'/bin/brave gmail.google.com'	'<Super>bracketleft'
+custom	'chat gpt'	'/bin/brave https://chat.openai.com/'	'<Super>e'
+custom	'terminal'	'alacritty'	'<Super>Return'
