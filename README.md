@@ -1,8 +1,8 @@
 # .config
 This is my dot files
 
-### Some task that I might me config
-Change the network interface:
+### Some tasks that I might need to configure
+Change the network interface name:
 ```bash
 sudo nano /etc/udev/rules.d/10-network.rules
 ```
@@ -17,7 +17,7 @@ sudo dd if=/dev/sdX bs=4M | pv -s $(sudo blockdev --getsize64 /dev/sdX) | gzip -
 ```
 Restore a backup from `.img.gz`
 ```bash
-zcat .img.gz | dd of=/dev/sdX
+zcat .img.gz | pv -s $(sudo blockdev --getsize64 /dev/sdX) |  dd of=/dev/sdX
 ```
 
 Packages that might I use:
