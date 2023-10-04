@@ -26,3 +26,11 @@ xclip
 zsh-autosuggestions
 net-tools
 ```
+
+### Off-topic
+
+```bash
+cryptomount -a
+insmod normal
+normal
+```
