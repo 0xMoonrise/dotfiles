@@ -25,6 +25,7 @@ Packages that might I use:
 xclip
 zsh-autosuggestions
 net-tools
+mkinitcpio-firmware
 ```
 
 ### Off-topic
