@@ -1,4 +1,6 @@
-set show-all-if-ambiguous on
-set menu-complete-display-prefix on
-set colored-completion-prefix on
-set colored-stats on
+$if Bash
+  Space: magic-space
+$endif
+set completion-ignore-case on
+"\e[A": history-search-backward
+"\e[B": history-search-forward
