@@ -83,18 +83,24 @@ get_target() {
 
 # Start a Simple HTTP Server
 httpserver() {
-    local port="${1:-8000}"
-    local INET=''
-    local name=('tun0' 'eth0' 'wlan0')
-    if [[ -f /sys/class/net/${name[1]}/operstate ]]; then
-        INET=${name[1]}
-    elif [[ $(< /sys/class/net/${name[2]}/operstate) == "up" ]]; then
-        INET=${name[2]}
-    else
-        INET=${name[3]}
-    fi
 
-    local IP=$(ip -4 addr show $INET | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
+    local port="${1:-8000}"
+    local inets=$(ip addr | awk '/^[0-9]+: (.*):/ {print $2}')
+
+    if [ -z ${2+x} ]; then
+        if [[ $inets =~ tun[0-9]+ ||
+            $inets =~ wlan[0-9]+  ||
+            $inets =~ eth[0-9]+   ||
+            $inets =~ enp.*[0-9]+ ]]; then
+            inet=$MATCH
+        else
+          echo "[inet not found]"
+        fi
+    else
+        inet=${2}
+    fi
+    local IP=$(ip -4 addr show "$inet" | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
     echo "http://$IP:$port/"
     python -m http.server $port 1>/dev/null
+
 }

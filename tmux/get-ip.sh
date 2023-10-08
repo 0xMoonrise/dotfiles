@@ -1,14 +1,11 @@
 #!/bin/bash
 
-INET=''
-name=('tun0' 'eth0' 'wlan0')
-if [[ -f /sys/class/net/${name[1]}/operstate ]]; then
-    INET=${name[1]}
-elif [[ $(< /sys/class/net/${name[2]}/operstate) == "up" ]]; then
-    INET=${name[2]}
+inets=$(ip addr | awk '/^[0-9]+: (.*):/ {print $2}')
+if [[ $inets =~ tun[0-9]+   ||
+      $inets =~ wlan[0-9]+  ||
+      $inets =~ eth[0-9]+   ||
+      $inets =~ enp.*[0-9]+ ]]; then
+    echo $(ip -4 addr show "${BASH_REMATCH[0]}" | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
 else
-    INET=${name[3]}
+    echo "[inet not found]"
 fi
-
-echo $(ip -4 addr show $INET | grep -oP "(?<=inet\s)\d+(\.\d+){3}")
-
