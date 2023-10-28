@@ -1,8 +1,12 @@
 #!/bin/bash
 
 sudo sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/" /etc/pacman.conf
+
 sudo pacman -S --noconfirm alacritty git tmux firefox chromium zsh xclip \
-zsh-autosuggestions net-tools noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu
+zsh-autosuggestions net-tools noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu \
+python-pip
+
+python -m pip install setuptools
 
 echo '<alias>
   <family>sans-serif</family>
@@ -22,6 +26,8 @@ gsettings set org.gnome.shell.keybindings switch-to-application-1 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-2 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-3 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-4 \[\]
+
+git clone http://github.com/0xMoonrise/dotfiles
 
 mv alacritty ~/.config/
 mv tmux ~/.config/
@@ -51,5 +57,14 @@ if [[ $1 == "blackarch" ]]; then
     echo "[!] Warning burp.sh does not match with sha256sum."
     exit 1
   fi
+
+  echo "[+] Success..."
+
+  sudo pacman -S --noconfirm wfuzz ffuf metasploit exploitdb ghidra radare2 evil-winrm crackmapexec \
+  jwt-tool nmap zmap dirbuster dirsearch hashcat john hashid httpx amass tcpdump wireshark-qt \
+  wireshark-cli aircrack-ng seclists openvpn keepass nuclei assetfinder dirb arjun gospider \
+  waybackurls gau hakrawler nikto netstumbler netcat sqlmap ettercap rainbowcrack arp-scan \
+
+  sudo chown -R $USER:$USER /usr/share/crackmapexec
 
 fi
