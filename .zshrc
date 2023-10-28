@@ -20,12 +20,12 @@ plugins=(
 )
 
 # Keyboard Shortcuts
-bindkey '^\033[1;5C' autosuggest-accept
+
+bindkey '^[[Z' autosuggest-accept
 bindkey "^\033[1;5C" forward-word
 bindkey "^\033[1;5D" backward-word
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
-
 
 # Prompt Configuration
 PROMPT='[%n@%m %1~]%# '
