@@ -23,8 +23,6 @@ gsettings set org.gnome.shell.keybindings switch-to-application-2 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-3 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-4 \[\]
 
-git clone http://github.com/0xMoonrise/dotfiles
-
 mv alacritty ~/.config/
 mv tmux ~/.config/
 mv .bashrc .inputrc .nanorc .zshrc ~
