@@ -27,8 +27,6 @@ gsettings set org.gnome.shell.keybindings switch-to-application-2 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-3 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-4 \[\]
 
-git clone http://github.com/0xMoonrise/dotfiles
-
 mv alacritty ~/.config/
 mv tmux ~/.config/
 mv .bashrc .inputrc .nanorc .zshrc ~
@@ -49,7 +47,7 @@ if [[ $1 == "blackarch" ]]; then
   echo "[+] Success..."
   chmod +x strap.sh
   sudo ./strap.sh
-  sudo pacman -Syu
+  sudo pacman -Syu --noconfirm
 
   curl "https://portswigger-cdn.net/burp/releases/download?product=community&version=2023.10.2.4&type=Linux" -o burp.sh
   echo 1ebf4100490799498073bac51bb71c2cb27ca48f642da9b495e65350d3f8b34d burp.sh | sha256sum -c 2>/dev/null
@@ -66,5 +64,6 @@ if [[ $1 == "blackarch" ]]; then
   waybackurls gau hakrawler nikto netstumbler netcat sqlmap ettercap rainbowcrack arp-scan \
 
   sudo chown -R $USER:$USER /usr/share/crackmapexec
-
+  # TODO graphic drivers to enable crack station with john and hashcat
+  # TODO download wifi drivers https://gist.github.com/watzon/dabdc4cef0f0b3be9bc34a5a5c2686f9
 fi
