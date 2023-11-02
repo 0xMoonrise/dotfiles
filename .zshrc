@@ -3,6 +3,9 @@ source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # Zsh Options
 setopt interactivecomments
+setopt interactivecomments
+setopt histignorealldups
+setopt sharehistory
 autoload -Uz compinit
 autoload -U history-search-end
 compinit
