@@ -7,6 +7,7 @@ autoload -Uz compinit
 autoload -U history-search-end
 compinit
 zstyle ':completion:*' menu select
+zstyle ":completion:*:commands" rehash 1
 
 # Command History Settings
 HISTFILE=~/.zsh_history
