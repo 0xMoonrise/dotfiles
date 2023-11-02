@@ -24,10 +24,8 @@ plugins=(
 )
 
 # Keyboard Shortcuts
-
 bindkey '^[[Z' autosuggest-accept
-bindkey "^\033[1;5C" forward-word
-bindkey "^\033[1;5D" backward-word
+bindkey '^[[C' forward-word
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
 
