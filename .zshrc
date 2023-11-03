@@ -28,6 +28,8 @@ bindkey '^[[Z' autosuggest-accept
 bindkey '^[[C' forward-word
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
+bindkey "^\033[1;5C" forward-word
+bindkey "^\033[1;5D" backward-word
 
 # Prompt Configuration
 PROMPT='[%n@%m %1~]%# '
