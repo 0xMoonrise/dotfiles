@@ -25,7 +25,6 @@ plugins=(
 
 # Keyboard Shortcuts
 bindkey '^[[Z' autosuggest-accept
-bindkey '^[[C' forward-word
 bindkey "^[[A" history-beginning-search-backward
 bindkey "^[[B" history-beginning-search-forward
 bindkey "^\033[1;5C" forward-word
@@ -57,6 +56,9 @@ alias gnome-config='nano ~/.config/gtk-3.0/gtk.css'
 alias tmux-config='nano ~/.config/tmux/tmux.conf'
 alias bash-config='nano ~/.bashrc && source ~/.bashrc'
 alias zsh-config='nano ~/.zshrc && source ~/.zshrc'
+
+# Environment Variable to set delimiter
+export WORDCHARS='*?_[]~=&;!#$%^(){}<>'
 
 # Environment Variables for Common Paths
 export WEB_CONENT="/usr/share/seclists/Discovery/Web-Content/"
