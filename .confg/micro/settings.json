@@ -1,0 +1,12 @@
+{
+	"clipboard": "terminal",
+    "*.asm": {
+        "commenttype": "; %s"
+    },
+    "*.c": {
+        "commenttype": "/* %s */"
+    },
+    "*.ts": {
+        "commenttype": "/* %s */"
+    }
+}

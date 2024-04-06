@@ -180,9 +180,4 @@ org.gnome.settings-daemon.plugins.media-keys	volume-up-quiet-static	['<Alt>XF86A
 org.gnome.settings-daemon.plugins.media-keys	volume-up-static	['XF86AudioRaiseVolume', '<Ctrl>XF86AudioRaiseVolume']
 org.gnome.settings-daemon.plugins.media-keys	www	[]
 org.gnome.settings-daemon.plugins.media-keys	www-static	['XF86WWW']
-custom	'whatsapp.com'	'/bin/brave web.whatsapp.com'	'<Super>q'
-custom	'youtube.com'	'/bin/brave youtube.com'	'<Super>w'
-custom	'google.com'	'/bin/brave-browser google.com'	'<Super>bracketright'
-custom	'gmail.google.com'	'/bin/brave gmail.google.com'	'<Super>bracketleft'
-custom	'chat gpt'	'/bin/brave https://chat.openai.com/'	'<Super>e'
 custom	'terminal'	'alacritty'	'<Super>Return'
