@@ -2,9 +2,7 @@
 
 sudo sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/" /etc/pacman.conf
 
-sudo pacman -S --noconfirm alacritty git tmux firefox chromium zsh xclip \
-zsh-autosuggestions net-tools noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu \
-python-pip micro
+sudo pacman -S --noconfirm - < base.txt
 
 python -m pip install setuptools
 
@@ -52,12 +50,9 @@ if [[ $1 == "blackarch" ]]; then
 
   echo "[+] Success..."
 
-  sudo pacman -S --noconfirm wfuzz ffuf metasploit exploitdb ghidra radare2 evil-winrm crackmapexec \
-  jwt-tool nmap zmap dirbuster dirsearch hashcat john hashid httpx amass tcpdump wireshark-qt \
-  wireshark-cli aircrack-ng seclists openvpn keepass nuclei assetfinder dirb arjun gospider \
-  waybackurls gau hakrawler nikto netstumbler netcat sqlmap ettercap rainbowcrack arp-scan \
+  sudo pacman -S --noconfirm - < blacharch.txt
   
-  sudo chown -R $USER:$USER /usr/share/crackmapexec
+  sudo chown -R $USER:$USER /usr/share/netexec
   # TODO graphic drivers to enable crack station with john and hashcat
   # TODO download wifi drivers https://gist.github.com/watzon/dabdc4cef0f0b3be9bc34a5a5c2686f9
 fi

@@ -1,0 +1,15 @@
+alacritty
+git
+tmux
+firefox
+chromium
+zsh
+xclip
+zsh-autosuggestions
+net-tools
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
+ttf-dejavu
+python-pip
+micro
