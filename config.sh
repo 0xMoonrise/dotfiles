@@ -27,8 +27,7 @@ gsettings set org.gnome.shell.keybindings switch-to-application-2 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-3 \[\]
 gsettings set org.gnome.shell.keybindings switch-to-application-4 \[\]
 
-mv alacritty ~/.config/
-mv tmux ~/.config/
+cp -R .config/*  ~/.config/
 mv .bashrc .inputrc .nanorc .zshrc ~
 
 ./keybinds.pl keys-2023-10-04.bak
@@ -37,7 +36,7 @@ chsh -s $(which zsh)
 
 if [[ $1 == "blackarch" ]]; then
   curl -O https://blackarch.org/strap.sh
-  echo 5ea40d49ecd14c2e024deecf90605426db97ea0c strap.sh | sha1sum -c 2>/dev/null
+  echo 26849980b35a42e6e192c6d9ed8c46f0d6d06047 strap.sh | sha1sum -c 2>/dev/null
 
   if [[ $? -ne 0 ]]; then
     echo "[!] Warning strap.sh does not match with sha1sum."
