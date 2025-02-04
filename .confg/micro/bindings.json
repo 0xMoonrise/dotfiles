@@ -5,6 +5,7 @@
     "Alt-k": "command:hover",
     "Alt-r": "command:references",
     "Ctrl-g": "lua:comment.comment",
+	"Ctrl-x":"Quit",
     "CtrlSpace": "command:lspcompletion",
     "CtrlUnderscore": "lua:comment.comment",
     "\u001bctrlback": "DeleteWordLeft",
