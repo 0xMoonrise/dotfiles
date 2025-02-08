@@ -1,5 +1,4 @@
 {
-	"clipboard": "terminal",
     "*.asm": {
         "commenttype": "; %s"
     },
@@ -8,5 +7,8 @@
     },
     "*.ts": {
         "commenttype": "/* %s */"
-    }
+    },
+    "clipboard": "terminal",
+    "tabstospaces": true,
+    "tabsize": 4
 }

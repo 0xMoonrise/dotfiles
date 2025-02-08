@@ -1,21 +1,22 @@
 {
-    "Alt-/": "lua:comment.comment",
+	"Alt-/": "lua:comment.comment",
     "Alt-d": "command:definition",
     "Alt-f": "command:format",
     "Alt-k": "command:hover",
     "Alt-r": "command:references",
-    "Ctrl-g": "lua:comment.comment",
-	"Ctrl-x":"Quit",
+    "Alt-]":"SpawnMultiCursor",
+    "Alt-[":"RemoveMultiCursor",
     "CtrlSpace": "command:lspcompletion",
     "CtrlUnderscore": "lua:comment.comment",
-    "\u001bctrlback": "DeleteWordLeft",
+    "Alt-.":"OpenFile",
+    "Ctrl-x":"Quit",
     "Ctrl-o":"Save",
-    //Navigation Keys
-    "Ctrl-d":"SpawnMultiCursor",
+    "Ctrl-k":"DeleteLine",
     "Ctrl-w":"DeleteWordLeft",
     "Ctrl-e":"EndOfLine",
     "Ctrl-a":"StartOfTextToggle",
-    "Ctrl-Up":"ParagraphPrevious",
     "Ctrl-Down":"ParagraphNext",
-    "Ctrl-p":"CommandMode"
+    "Ctrl-Up":"ParagraphPrevious",
+    "Ctrl-Shift-Up": "SelectUp",
+    "Ctrl-Shift-Down": "SelectDown"
 }
