@@ -53,10 +53,12 @@
       (message "No LSP log buffer available"))))
 
 (defun insertar-tab ()
+  "Insert tab."
   (interactive)
   (insert "\t"))
 
 (defun cerrar-xref-buffer ()
+  "A."
   (interactive)
   (let ((xref-buf (get-buffer "*xref*")))
     (when xref-buf
@@ -77,8 +79,15 @@
                      (name . "^\\*lsp-log\\*$")
                      (name . "^\\*scratch\\*$")
                      (name . "^\\*gopls.*\\*$")
-                     (name . "^\\*Async-native.*\\*$")))))))
-                     
+                     (name . "^\\*Async-native.*\\*$")
+                     (name . "^\\*Completions*\\*$")
+                     (name . "^\\*Flycheck error messages\\*$")))))))
+
+(defun reload-init-file ()
+  "Reload init.el."
+  (interactive)
+  (load-file (expand-file-name "init.el" user-emacs-directory)))
+
 ;; ----------------------------------------
 ;; Keybindings
 ;; ----------------------------------------
@@ -101,12 +110,14 @@
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-r") #'lsp-find-definition)
-(global-set-key (kbd "C-x r") #'xref-pop-marker-stack)
+(global-set-key (kbd "C-x r") #'xref-go-back)
 (global-set-key (kbd "C-<return>") 'completion-at-point)
 (global-set-key (kbd "C-SPC") 'completion-at-point)
 (global-set-key (kbd "C-c TAB") 'insertar-tab)
 (global-set-key (kbd "C-c x") #'cerrar-xref-buffer)
 (global-set-key (kbd "C-x a") #'my/ibuffer-no-system-buffers)
+(global-set-key (kbd "C-x e") 'other-window)
+(global-set-key (kbd "C-c r") 'reload-init-file)
 
 ;; ----------------------------------------
 ;; Compatibility Functions / Declarations
