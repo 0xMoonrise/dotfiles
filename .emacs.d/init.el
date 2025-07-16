@@ -6,6 +6,8 @@
 ;; ----------------------------------------
 ;;; Code:
 (require 'package)
+(require 'dired-aux)
+
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")))
@@ -15,12 +17,6 @@
 
 (eval-when-compile
   (require 'use-package))
-
-;; ----------------------------------------
-;; Themes
-;; ----------------------------------------
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'dracula t)
 
 ;; ----------------------------------------
 ;; Basic UI Settings
@@ -80,7 +76,15 @@
   (interactive)
   (load-file (expand-file-name "init.el" user-emacs-directory)))
 
+(defun my/dired-create-empty-file ()
+  "Create an empty file in Dired."
+  (interactive)
+  (let ((filename (read-string "File name: ")))
+    (dired-create-empty-file filename)
+    (revert-buffer)))
 
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "c") #'my/dired-create-empty-file))
 ;; ----------------------------------------
 ;; Keybindings
 ;; ----------------------------------------
@@ -205,8 +209,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company dired-single dracula-theme flycheck go-mode lsp-treemacs
-             lsp-ui)))
+   '(company dired-create dired-hacks-utils dired-single dracula-theme
+             flycheck go-mode lsp-treemacs lsp-ui)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -214,6 +218,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; ----------------------------------------
+;; Themes
+;; ----------------------------------------
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(load-theme 'dracula t)
 
 (provide 'init)
 (put 'dired-find-alternate-file 'disabled nil)
