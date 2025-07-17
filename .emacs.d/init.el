@@ -100,6 +100,7 @@
 (global-set-key (kbd "C-x a") #'my/ibuffer-no-system-buffers)
 (global-set-key (kbd "C-x e") 'other-window)
 (global-set-key (kbd "C-x r") #'xref-go-back)
+(global-set-key (kbd "C-x f") 'lsp-find-implementation)
 
 ;; ===== C-c bindings =====
 (global-set-key (kbd "C-c TAB") 'insertar-tab)
@@ -188,6 +189,7 @@
 
 (use-package lsp-treemacs
   :ensure t
+  :after treemacs
   :commands lsp-treemacs-errors-list)
 
 ;; ----------------------------------------
@@ -208,22 +210,29 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("2d74de1cc32d00b20b347f2d0037b945a4158004f99877630afc034a674e3ab7"
+     default))
  '(package-selected-packages
-   '(company dired-create dired-hacks-utils dired-single dracula-theme
-             flycheck go-mode lsp-treemacs lsp-ui)))
+   '(company dired-create dired-single flycheck go-mode lsp-treemacs
+             lsp-ui sublime-themes)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
-
+ '(default ((t (:background "black" :foreground "white")))))
 ;; ----------------------------------------
 ;; Themes
 ;; ----------------------------------------
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'dracula t)
+
+(use-package sublime-themes
+  :ensure t
+  :config
+  (load-theme 'spolsky t)
+  (set-face-background 'vertical-border "gray20"))
 
 (provide 'init)
 (put 'dired-find-alternate-file 'disabled nil)
