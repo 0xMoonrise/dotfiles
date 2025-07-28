@@ -18,39 +18,13 @@
     (make-directory auto-save-dir t))
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
 (setq backup-directory-alist `(("." . "/tmp/emacs-backups")))
+
 (setq backup-by-copying t)
 (setq vc-make-backup-files t)
 
 ;; Editor behavior
 (setq-default tab-width 2)
 (setq-default indent-tabs-mode nil)
-
-;; Helper functions
-(defun reload-init-file ()
-  "Reload the main init.el file."
-  (interactive)
-  (load-file (expand-file-name "init.el" user-emacs-directory)))
-
-(defun insert-literal-tab ()
-  "Insert a literal tab character."
-  (interactive)
-  (insert "\t"))
-
-(defun my-insert-pair (pair)
-  "Insert PAIR (a string of two chars) around region or at point."
-  (interactive "sPair (e.g. {}, (), []): ")
-  (let ((open (substring pair 0 1))
-        (close (substring pair 1 2)))
-    (if (region-active-p)
-        (let ((beg (region-beginning))
-              (end (region-end)))
-          (save-excursion
-            (goto-char end)
-            (insert close)
-            (goto-char beg)
-            (insert open)))
-      (insert open close)
-      (backward-char 1))))
 
 ;; Flycheck
 (use-package flycheck
@@ -87,13 +61,13 @@
 
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-x RET")
-    (lambda ()
-      (interactive)
-      (when (fboundp 'lsp-describe-thing-at-point)
-        (lsp-describe-thing-at-point)
-        (let ((help-window (get-buffer-window "*lsp-help*")))
-          (when help-window
-            (select-window help-window)))))))
+              (lambda ()
+                (interactive)
+                (when (fboundp 'lsp-describe-thing-at-point)
+                  (lsp-describe-thing-at-point)
+                  (let ((help-window (get-buffer-window "*lsp-help*")))
+                    (when help-window
+                      (select-window help-window)))))))
 
 (use-package lsp-ui
   :ensure t

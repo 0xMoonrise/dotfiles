@@ -19,6 +19,7 @@
 (global-set-key (kbd "C-c TAB") 'insert-literal-tab)
 (global-set-key (kbd "C-c r") 'reload-init-file)
 (global-set-key (kbd "C-c f") 'lsp-ui-find-workspace-symbol)
+(global-set-key (kbd "C-c e") 'select-to-end-of-line)
 
 (global-set-key (kbd "C-<down>") 'forward-paragraph)
 (global-set-key (kbd "C-<up>") 'backward-paragraph)
@@ -31,11 +32,61 @@
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-r") 'lsp-find-definition)
 (global-set-key (kbd "C-w") 'backward-kill-word)
-;; (global-set-key (kbd "C-c RET") 'completion-at-point)
+(global-set-key (kbd "C-]") 'open-config-file)
 
 (global-set-key (kbd "C-c 1") (lambda () (interactive) (my-insert-pair "()")))
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))
 (global-set-key (kbd "C-c 3") (lambda () (interactive) (my-insert-pair "[]")))
+
+(defun my-insert-pair (pair)
+  "Insert PAIR (a string of two chars) around region or at point."
+  (interactive)
+  (let ((open (substring pair 0 1))
+        (close (substring pair 1 2)))
+    (if (region-active-p)
+        (let ((beg (region-beginning))
+              (end (region-end)))
+          (save-excursion
+            (goto-char end)
+            (insert close)
+            (goto-char beg)
+            (insert open)))
+      (insert open close)
+      (backward-char 1))))
+
+(defun reload-init-file ()
+  "Reload the main init.el file."
+  (interactive)
+  (load-file (expand-file-name "init.el" user-emacs-directory)))
+
+(defun select-to-end-of-line ()
+  "Select from point to end of line."
+  (interactive)
+  (set-mark (point))
+  (end-of-line))
+
+(defun open-config-file ()
+  "Open a buffer with one of the Emacs config files."
+  (interactive)
+  (let* ((config-files '(("init.el" . "~/.emacs.d/init.el")
+                         ("custom.el" . "~/.emacs.d/custom.el")
+                         ("keybindings.el" . "~/.emacs.d/keybindings.el")))
+         (completion-extra-properties '(:annotation-function config-annot-fn))
+         (choice (completing-read "Choose config file: " config-files))
+         (file-path (expand-file-name (cdr (assoc choice config-files)))))
+    (unless (file-exists-p file-path)
+      (with-temp-buffer (write-file file-path)))
+    (find-file file-path)))
+
+(defun config-annot-fn (candidate)
+  "Return aligned annotation for config file CANDIDATE."
+  (let ((annotations '(("init.el" . "Main init file")
+                       ("custom.el" . "User customizations")
+                       ("keybindings.el" . "Custom keybindings")))
+        (max-width 15))
+    (let* ((desc (cdr (assoc candidate annotations)))
+           (padding (make-string (- max-width (length candidate)) ?\s)))
+      (concat padding desc))))
 
 (provide 'keybindings)
 ;;; keybindings.el ends here
