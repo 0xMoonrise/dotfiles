@@ -31,18 +31,30 @@
   :ensure t
   :init (global-flycheck-mode))
 
-;; Company
-(use-package company
+(use-package corfu
   :ensure t
-  :hook (after-init . global-company-mode)
+  :init
+  (global-corfu-mode)
   :custom
-  (company-idle-delay nil)
-  (company-minimum-prefix-length 1)
-  (company-tooltip-align-annotations t)
-  :bind (:map company-active-map
-              ("TAB" . company-complete-selection))
+  (corfu-auto nil)
+  (corfu-cycle t)
+  (corfu-preselect 'prompt)
+  (corfu-on-exact-match nil)
+  (corfu-quit-no-match 'separator)
   :config
-  (define-key company-mode-map (kbd "TAB") 'company-indent-or-complete-common))
+  (corfu-popupinfo-mode 1)
+  (let ((map corfu-map))
+    (define-key map (kbd "TAB") 'corfu-next)
+    (define-key map (kbd "S-TAB") 'corfu-previous)))
+
+(when (not (display-graphic-p))
+  (use-package corfu-terminal
+    :ensure t
+    :after corfu
+    :config
+    (corfu-terminal-mode +1)))
+
+(setq tab-always-indent 'complete)
 
 ;; LSP
 (use-package lsp-mode
@@ -57,7 +69,8 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-signature-render-documentation nil)
   (lsp-signature-auto-activate nil)
-  (lsp-eldoc-enable-signature-help nil))
+  (lsp-eldoc-enable-signature-help nil)
+  (semantic-highlighting t))
 
 (with-eval-after-load 'lsp-mode
   (define-key lsp-mode-map (kbd "C-x RET")
@@ -79,7 +92,8 @@
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-delay 0.1)
   (lsp-ui-sideline-ignore-duplicate t)
-  (lsp-ui-doc-enable nil))
+  (lsp-ui-doc-enable t))
+
 
 (use-package lsp-treemacs
   :ensure t
@@ -95,17 +109,19 @@
 (use-package python-mode
   :ensure t)
 
-;; Theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(use-package sublime-themes
-  :ensure t
-  :config
-  (load-theme 'spolsky t)
-  (set-face-background 'vertical-border "gray20")
-  (set-face-attribute 'default nil :background "black" :foreground "white"))
+(use-package magit
+  :ensure t)
 
+(use-package seq
+  :ensure t)
 ;; Misc
 (put 'dired-find-alternate-file 'disabled nil)
+
+(use-package ibuffer
+  :commands ibuffer
+  :bind (:map ibuffer-mode-map
+              ("C-x RET" . ibuffer-visit-buffer-other-window)
+              ("p" . find-file)))
 
 (provide 'custom)
 ;;; custom.el ends here
