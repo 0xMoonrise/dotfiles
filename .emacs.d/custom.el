@@ -1,16 +1,10 @@
 ;;; custom.el --- Core customization and packages -*- lexical-binding: t; -*-
 ;;; Commentary:
-;;; UI, package setup, helpers, modes, company, LSP, themes, etc.
+;;; UI, setup helpers, package, modes, company, LSP, themes, etc.
 ;;; Code:
 
 ;; UI settings
-(global-display-line-numbers-mode t)
-(electric-pair-mode 1)
-(setq scroll-conservatively 101
-      scroll-margin 3
-      scroll-step 1
-      next-screen-context-lines 5
-      scroll-preserve-screen-position t)
+(add-hook 'org-mode-hook 'org-indent-mode)
 
 ;; Backup & autosave
 (let ((auto-save-dir "/tmp/emacs-autosaves/"))
@@ -55,7 +49,6 @@
     (corfu-terminal-mode +1)))
 
 (setq tab-always-indent 'complete)
-
 ;; LSP
 (use-package lsp-mode
   :ensure t
@@ -82,6 +75,11 @@
                     (when help-window
                       (select-window help-window)))))))
 
+(setq corfu-quit-at-boundary nil
+      corfu-quit-no-match nil
+      corfu-on-exact-match nil
+      corfu-preselect 'prompt)
+
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
@@ -104,10 +102,13 @@
 (use-package go-mode
   :ensure t
   :mode "\\.go\\'"
-  :hook (go-mode . display-line-numbers-mode))
+  :hook (go-mode . display-line-numbers-mode)
+  :config
+  (define-key go-mode-map (kbd "C-c l") 'gofmt))
 
 (use-package python-mode
   :ensure t)
+
 
 (use-package magit
   :ensure t)
@@ -123,5 +124,17 @@
               ("C-x RET" . ibuffer-visit-buffer-other-window)
               ("p" . find-file)))
 
+(use-package vertico
+  :ensure t
+  :init (vertico-mode))
+
+(use-package marginalia
+  :ensure t
+  :init (marginalia-mode))
+
+(use-package consult
+  :ensure t)
+
 (provide 'custom)
 ;;; custom.el ends here
+  

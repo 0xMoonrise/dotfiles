@@ -38,6 +38,31 @@
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))
 (global-set-key (kbd "C-c 3") (lambda () (interactive) (my-insert-pair "[]")))
 
+(eval-when-compile
+  (require 'org))
+
+(with-eval-after-load 'org
+  (define-key org-mode-map (kbd "C-c a") 'org-insert-item)
+  (define-key org-mode-map (kbd "C-c s") 'org-insert-heading)
+  (define-key org-mode-map (kbd "C-c d") 'org-insert-timestamp)
+  (define-key org-mode-map (kbd "C-c w") 'org-meta-return))
+
+(add-hook 'org-mode-hook 'org-indent-mode)
+
+(defun my/python-tab-complete-or-indent ()
+  "Try completion, fall back to indent in real Python buffers."
+  (interactive)
+  (let ((completion-fn (run-hook-with-args-until-success 'completion-at-point-functions)))
+    (if (and completion-fn (thing-at-point 'symbol))
+        (completion-at-point)
+      (indent-for-tab-command))))
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (when (derived-mode-p 'python-mode) ;; solo si es python-mode real
+              (local-set-key (kbd "TAB") #'my/python-tab-complete-or-indent)
+              (local-set-key (kbd "<tab>") #'my/python-tab-complete-or-indent))))
+
 (defun my-insert-pair (pair)
   "Insert PAIR (a string of two chars) around region or at point."
   (interactive)
@@ -88,5 +113,21 @@
            (padding (make-string (- max-width (length candidate)) ?\s)))
       (concat padding desc))))
 
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("Org" ;; all org-related buffers
+                (mode . org-mode))
+               ("Programming" ;; prog stuff not already in MyProjectX
+                (or
+                 (mode . c-mode)
+                 (mode . c++-mode)
+                 (mode . perl-mode)
+                 (mode . python-mode)
+                 (mode . emacs-lisp-mode)))
+               ("LaTeX"
+                (mode . latex-mode))
+               ("Directories"
+                (mode . dired-mode))
+               ))))
 (provide 'keybindings)
 ;;; keybindings.el ends here
