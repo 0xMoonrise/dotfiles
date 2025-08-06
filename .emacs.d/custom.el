@@ -5,6 +5,17 @@
 
 ;; UI settings
 (add-hook 'org-mode-hook 'org-indent-mode)
+(global-display-line-numbers-mode t)
+(setq-default fill-column 80)
+(setq-default indent-tabs-mode nil)
+(setq backup-by-copying t)
+(setq vc-make-backup-files t)
+
+
+(require 'ispell)
+(setq ispell-program-name "aspell")
+(setq ispell-dictionary "en")
+(setq ispell-extra-args '("--sug-mode=ultra"))
 
 ;; Backup & autosave
 (let ((auto-save-dir "/tmp/emacs-autosaves/"))
@@ -13,12 +24,6 @@
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
 (setq backup-directory-alist `(("." . "/tmp/emacs-backups")))
 
-(setq backup-by-copying t)
-(setq vc-make-backup-files t)
-
-;; Editor behavior
-(setq-default tab-width 2)
-(setq-default indent-tabs-mode nil)
 
 ;; Flycheck
 (use-package flycheck
@@ -134,6 +139,7 @@
 
 (use-package consult
   :ensure t)
+
 
 (provide 'custom)
 ;;; custom.el ends here

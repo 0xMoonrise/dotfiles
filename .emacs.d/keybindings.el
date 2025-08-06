@@ -38,16 +38,58 @@
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))
 (global-set-key (kbd "C-c 3") (lambda () (interactive) (my-insert-pair "[]")))
 
-(eval-when-compile
-  (require 'org))
+(require 'org)
+(setq org-return-follows-link t)
+(setq-default indent-tabs-mode nil)
+(add-hook 'org-mode-hook (lambda () (org-indent-mode -1)
+                           (setq indent-tabs-mode nil)))
 
-(with-eval-after-load 'org
-  (define-key org-mode-map (kbd "C-c a") 'org-insert-item)
-  (define-key org-mode-map (kbd "C-c s") 'org-insert-heading)
-  (define-key org-mode-map (kbd "C-c d") 'org-insert-timestamp)
-  (define-key org-mode-map (kbd "C-c w") 'org-meta-return))
+(define-key org-mode-map (kbd "C-c a") 'org-insert-item)
+(define-key org-mode-map (kbd "C-c s") 'org-insert-heading)
+(define-key org-mode-map (kbd "C-c d") 'insert-org-date-with-brackets)
+(define-key org-mode-map (kbd "C-c w") 'org-meta-return)
+(define-key org-mode-map (kbd "C-l")   'org-insert-link)
+(define-key org-mode-map (kbd "C-c t") 'org-insert-task-with-id)
+(define-key org-mode-map (kbd "C-c f") 'org-mark-done-with-date)
+(define-key org-mode-map (kbd "C-c c") 'org-archive-subtree)
 
+(define-key org-mode-map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
+(define-key org-mode-map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
+(define-key org-mode-map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))
+
+(setq org-archive-location "./Archive/done.org::* Archived")
+
+(defun insert-org-date-with-brackets ()
+  "Insert a date in the format [YYYY-MM-DD DDD] with calendar selection."
+  (interactive)
+  (let* ((date (org-read-date nil nil nil "Select date: "))
+         (clean-date (replace-regexp-in-string "[<>]" "" date))
+         (formatted (format "[%s]" clean-date)))
+    (insert formatted)))
+
+(defun org-surround (char)
+  "Wraps the selected region or word in CHAR."
+  (let* ((bounds (if (use-region-p)
+                     (cons (region-beginning) (region-end))
+                   (bounds-of-thing-at-point 'word)))
+         (beg (car bounds))
+         (end (cdr bounds)))
+    (when bounds
+      (save-excursion
+        (goto-char end)
+        (insert char)
+        (goto-char beg)
+        (insert char)))))
+
+(defun org-mark-done-with-date ()
+  "Mark the current Org entry as DONE."
+  (interactive)
+  (org-todo "DONE")
+  (org-set-property "DONE" (format-time-string "[%Y-%m-%d %a]")))
+
+(setq org-hide-emphasis-markers t)
 (add-hook 'org-mode-hook 'org-indent-mode)
+
 
 (defun my/python-tab-complete-or-indent ()
   "Try completion, fall back to indent in real Python buffers."
@@ -113,21 +155,20 @@
            (padding (make-string (- max-width (length candidate)) ?\s)))
       (concat padding desc))))
 
-(setq ibuffer-saved-filter-groups
-      (quote (("default"
-               ("Org" ;; all org-related buffers
-                (mode . org-mode))
-               ("Programming" ;; prog stuff not already in MyProjectX
-                (or
-                 (mode . c-mode)
-                 (mode . c++-mode)
-                 (mode . perl-mode)
-                 (mode . python-mode)
-                 (mode . emacs-lisp-mode)))
-               ("LaTeX"
-                (mode . latex-mode))
-               ("Directories"
-                (mode . dired-mode))
-               ))))
+(defun org-insert-task-with-id()
+  "Create a new org note."
+  (interactive)
+  (require 'org-id)
+  (let ((task-title (read-string "Task name: "))
+        (task-id (org-id-new))
+        (created-date (format-time-string "[%Y-%m-%d %a]")))
+    (insert (format "
+** TODO %s
+:PROPERTIES:
+:ID:       %s
+:CREATED:  %s
+:END:
+" task-title task-id created-date))))
+
 (provide 'keybindings)
 ;;; keybindings.el ends here
