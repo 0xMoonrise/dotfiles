@@ -1,31 +1,43 @@
-;;; custom.el --- Core customization and packages -*- lexical-binding: t; -*-
+;;; config.el --- Core customization and packages -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; UI, setup helpers, package, modes, company, LSP, themes, etc.
 ;;; Code:
 
-;; UI settings
+(require 'org)
+(require 'ispell)
+(require 'recentf)
+
+(setq org-archive-location "./Archive/done.org::* Archived")
 (add-hook 'org-mode-hook 'org-indent-mode)
+(add-hook 'org-mode-hook (lambda () (org-indent-mode -1)
+                           (setq indent-tabs-mode nil)))
+(setq org-return-follows-link t)
+(setq org-hide-emphasis-markers t)
+
 (global-display-line-numbers-mode t)
+(electric-pair-mode t)
+(put 'dired-find-alternate-file 'disabled nil)
+(setq-default tab-width 2)
 (setq-default fill-column 80)
 (setq-default indent-tabs-mode nil)
 (setq backup-by-copying t)
 (setq vc-make-backup-files t)
 
+(savehist-mode 1)
+(repeat-mode 1)
 
-(require 'ispell)
-(setq ispell-program-name "aspell")
-(setq ispell-dictionary "en")
-(setq ispell-extra-args '("--sug-mode=ultra"))
-
-;; Backup & autosave
 (let ((auto-save-dir "/tmp/emacs-autosaves/"))
   (unless (file-exists-p auto-save-dir)
     (make-directory auto-save-dir t))
   (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
 (setq backup-directory-alist `(("." . "/tmp/emacs-backups")))
 
+(recentf-mode 1)
 
-;; Flycheck
+(setq ispell-program-name "aspell")
+(setq ispell-dictionary "en")
+(setq ispell-extra-args '("--sug-mode=ultra"))
+
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode))
@@ -54,7 +66,11 @@
     (corfu-terminal-mode +1)))
 
 (setq tab-always-indent 'complete)
-;; LSP
+(setq corfu-quit-at-boundary nil
+      corfu-quit-no-match nil
+      corfu-on-exact-match nil
+      corfu-preselect 'prompt)
+
 (use-package lsp-mode
   :ensure t
   :hook ((go-mode . lsp-deferred)
@@ -80,11 +96,6 @@
                     (when help-window
                       (select-window help-window)))))))
 
-(setq corfu-quit-at-boundary nil
-      corfu-quit-no-match nil
-      corfu-on-exact-match nil
-      corfu-preselect 'prompt)
-
 (use-package lsp-ui
   :ensure t
   :hook (lsp-mode . lsp-ui-mode)
@@ -97,13 +108,11 @@
   (lsp-ui-sideline-ignore-duplicate t)
   (lsp-ui-doc-enable t))
 
-
 (use-package lsp-treemacs
   :ensure t
   :after treemacs
   :commands lsp-treemacs-errors-list)
 
-;; Language modes
 (use-package go-mode
   :ensure t
   :mode "\\.go\\'"
@@ -114,14 +123,11 @@
 (use-package python-mode
   :ensure t)
 
-
 (use-package magit
   :ensure t)
 
 (use-package seq
   :ensure t)
-;; Misc
-(put 'dired-find-alternate-file 'disabled nil)
 
 (use-package ibuffer
   :commands ibuffer
@@ -140,7 +146,5 @@
 (use-package consult
   :ensure t)
 
-
-(provide 'custom)
-;;; custom.el ends here
-  
+(provide 'config)
+;;; config.el ends here
