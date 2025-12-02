@@ -2,16 +2,15 @@
 set fish_greeting ""
 
 function fish_prompt
-    set dir (basename $PWD)
-    if test $PWD = $HOME
-        set dir "~"
-    end
-        echo ["$USER"@$hostname $dir]
-        echo "\$ "
+  set dir (basename $PWD)
+  if test $PWD = $HOME
+    set dir "~"
+  end
+    echo ["$USER"@$hostname $dir]
+    echo "\$ "
 end
 
 # quality of life aliases
-alias set-inet "tmux set-environment INET"
 
 # useful variables
 set -gx TERM xterm-256color
@@ -22,21 +21,21 @@ set -xg GOOS linux
 set -xg GOARCH arm64
 
 # functions and utility code
+function set-inet
+    tmux set-environment INET "$argv[1]"
+end
+
 function download_pdf
-    wget $argv -P /opt/lectures/
+  wget $argv -P /opt/lectures/
 end
 
 function upload_archive
- curl -v -X POST http://localhost:8080/upload -F "file=@$argv"
-end
-
-function set_inet
-    tmux set-environment -g INET "$argv"
+  curl -v -X POST http://localhost:8080/upload -F "file=@$argv"
 end
 
 if status is-interactive
 and not set -q TMUX
-    tmux attach -t base || tmux new -s base
+  tmux attach -t base || tmux new -s base
 end
 
 function envsource
