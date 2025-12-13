@@ -9,6 +9,6 @@
         "commenttype": "/* %s */"
     },
     "clipboard": "terminal",
-    "tabstospaces": true,
-    "tabsize": 4
+    "tabsize": 2,
+    "tabstospaces": true
 }
