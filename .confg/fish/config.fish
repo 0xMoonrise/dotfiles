@@ -10,6 +10,8 @@ function fish_prompt
     echo "\$ "
 end
 
+set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
+
 # quality of life aliases
 
 # useful variables
@@ -35,7 +37,11 @@ end
 
 if status is-interactive
 and not set -q TMUX
-  tmux attach -t base || tmux new -s base
+    if tmux has-session -t base 2>/dev/null
+        tmux attach -t base
+    else
+        tmux new -s base
+    end
 end
 
 function envsource
