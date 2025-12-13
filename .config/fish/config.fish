@@ -38,7 +38,7 @@ end
 if status is-interactive
 and not set -q TMUX
     if tmux has-session -t base 2>/dev/null
-        tmux attach -t base
+        tmux attach
     else
         tmux new -s base
     end
