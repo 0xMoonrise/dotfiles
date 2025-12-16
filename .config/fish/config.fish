@@ -17,10 +17,12 @@ set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 # useful variables
 set -gx TERM xterm-256color
 set -gx INET eth0
-set -gx PATH $PATH /usr/local/go/bin
+
+#Golang enviroment variables
 set -gx GOPATH $HOME/go
-set -xg GOOS linux
-set -xg GOARCH arm64
+set -gx GOOS linux
+set -gx GOARCH arm64
+set -gx PATH $PATH $GOPATH/bin
 
 # functions and utility code
 function set-inet
