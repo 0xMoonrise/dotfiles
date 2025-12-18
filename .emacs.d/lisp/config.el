@@ -122,14 +122,6 @@
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
-(use-package lsp-mode
-  :hook ((go-mode . lsp-deferred)
-         (python-mode . lsp-deferred)
-         (sql-mode . lsp-deferred))
-  :commands lsp
-  :custom
-  (lsp-completion-provider :capf))
-
 ;; --------------------------------------------------
 ;; Diagnostics
 ;; --------------------------------------------------
@@ -147,6 +139,8 @@
 (use-package lsp-mode
   :hook ((go-mode python-mode sql-mode) . lsp-deferred)
   :commands lsp
+  :init
+  (setq gc-cons-threshold (* 200 1024 1024))
   :custom
   (lsp-completion-provider :none)
   (lsp-session-file "~/.emacs.d/.lsp-session-v1")
