@@ -3,78 +3,149 @@
 ;;; UI, setup helpers, package, modes, company, LSP, themes, etc.
 ;;; Code:
 
-(require 'org)
-(require 'ispell)
-(require 'recentf)
+;; --------------------------------------------------
+;; Core editor defaults
+;; --------------------------------------------------
 
-(setq org-archive-location "./Archive/done.org::* Archived")
-(add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook (lambda () (org-indent-mode -1)
-                           (setq indent-tabs-mode nil)))
-(setq org-return-follows-link t)
-(setq org-hide-emphasis-markers t)
+(require 'utils)
 
-(global-display-line-numbers-mode t)
-(electric-pair-mode t)
-(put 'dired-find-alternate-file 'disabled nil)
-(setq-default tab-width 2)
-(setq-default fill-column 80)
-(setq-default indent-tabs-mode nil)
-(setq backup-by-copying t)
-(setq vc-make-backup-files t)
+(setq-default electric-indent-mode t
+              fill-column 80
+              indent-tabs-mode nil
+              tab-width 2)
+
+(electric-pair-mode 1)
+(global-display-line-numbers-mode 1)
+
+(setq scroll-step 1
+      scroll-conservatively 10000
+      indent-line-function #'indent-relative)
+
+;; --------------------------------------------------
+;; Files, backups, history
+;; --------------------------------------------------
+
+(setq backup-by-copying t
+      vc-make-backup-files t
+      backup-directory-alist `(("." . "/tmp/emacs-backups")))
+
+(let ((auto-save-dir "/tmp/emacs-autosaves/"))
+  (unless (file-directory-p auto-save-dir)
+    (make-directory auto-save-dir t))
+  (setq auto-save-file-name-transforms
+        `((".*" ,auto-save-dir t))))
 
 (savehist-mode 1)
 (repeat-mode 1)
 
-(let ((auto-save-dir "/tmp/emacs-autosaves/"))
-  (unless (file-exists-p auto-save-dir)
-    (make-directory auto-save-dir t))
-  (setq auto-save-file-name-transforms `((".*" ,auto-save-dir t))))
-(setq backup-directory-alist `(("." . "/tmp/emacs-backups")))
+(use-package recentf
+  :init (recentf-mode 1))
 
-(recentf-mode 1)
+;; --------------------------------------------------
+;; Theme / Appearance
+;; --------------------------------------------------
 
-(setq ispell-program-name "aspell")
-(setq ispell-dictionary "en")
-(setq ispell-extra-args '("--sug-mode=ultra"))
+(use-package sublime-themes
+  :config
+  (load-theme 'spolsky t)
+  (set-face-attribute 'default nil
+                      :background "black"
+                      :foreground "white")
+  (set-face-background 'vertical-border "gray20"))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+;; --------------------------------------------------
+;; Org mode
+;; --------------------------------------------------
+
+(use-package org
+  :hook (org-mode . (lambda ()
+                      (setq indent-tabs-mode nil)))
+  :custom
+  (org-archive-location "./Archive/done.org::* Archived")
+  (org-return-follows-link t)
+  (org-hide-emphasis-markers t)
+  :config
+  (let ((map org-mode-map))
+    (define-key map (kbd "C-c a") 'org-insert-item)
+    (define-key map (kbd "C-c s") 'org-insert-heading)
+    (define-key map (kbd "C-c d") 'insert-org-date-with-brackets)
+    (define-key map (kbd "C-c w") 'org-meta-return)
+    (define-key map (kbd "C-l")   'org-insert-link)
+    (define-key map (kbd "C-c t") 'org-insert-task-with-id)
+    (define-key map (kbd "C-c f") 'org-mark-done-with-date)
+    (define-key map (kbd "C-c c") 'org-archive-subtree)
+    (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
+    (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
+    (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
+
+
+;; --------------------------------------------------
+;; Spell checking
+;; --------------------------------------------------
+
+(use-package ispell
+  :ensure nil
+  :custom
+  (ispell-program-name "aspell")
+  (ispell-dictionary "en")
+  (ispell-extra-args '("--sug-mode=ultra")))
+
+;; --------------------------------------------------
+;; Completion (Corfu / Cape)
+;; --------------------------------------------------
+
+(declare-function corfu-next "corfu")
+(declare-function corfu-previous "corfu")
 
 (use-package corfu
-  :ensure t
   :init
   (global-corfu-mode)
   :custom
   (corfu-auto nil)
   (corfu-cycle t)
   (corfu-preselect 'prompt)
-  (corfu-on-exact-match nil)
-  (corfu-quit-no-match 'separator)
   :config
-  (corfu-popupinfo-mode 1)
-  (let ((map corfu-map))
-    (define-key map (kbd "TAB") 'corfu-next)
-    (define-key map (kbd "S-TAB") 'corfu-previous)))
+  (define-key corfu-map (kbd "TAB") #'corfu-next)
+  (define-key corfu-map (kbd "<tab>") #'corfu-next)
+  (define-key corfu-map (kbd "S-TAB") #'corfu-previous)
+  (define-key corfu-map (kbd "<backtab>") #'corfu-previous))
 
 (when (not (display-graphic-p))
   (use-package corfu-terminal
-    :ensure t
     :after corfu
     :config
     (corfu-terminal-mode +1)))
 
-(setq tab-always-indent 'complete)
-(setq corfu-quit-at-boundary nil
-      corfu-quit-no-match nil
-      corfu-on-exact-match nil
-      corfu-preselect 'prompt)
+(use-package cape
+  :after corfu
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
 
 (use-package lsp-mode
-  :ensure t
   :hook ((go-mode . lsp-deferred)
-         (python-mode . lsp-deferred))
+         (python-mode . lsp-deferred)
+         (sql-mode . lsp-deferred))
+  :commands lsp
+  :custom
+  (lsp-completion-provider :capf))
+
+;; --------------------------------------------------
+;; Diagnostics
+;; --------------------------------------------------
+
+(use-package flycheck
+  :init
+  (global-flycheck-mode)
+  :custom
+  (flycheck-emacs-lisp-load-path 'inherit))
+
+;; --------------------------------------------------
+;; LSP
+;; --------------------------------------------------
+
+(use-package lsp-mode
+  :hook ((go-mode python-mode sql-mode) . lsp-deferred)
   :commands lsp
   :custom
   (lsp-completion-provider :none)
@@ -83,21 +154,9 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-signature-render-documentation nil)
   (lsp-signature-auto-activate nil)
-  (lsp-eldoc-enable-signature-help nil)
-  (semantic-highlighting t))
-
-(with-eval-after-load 'lsp-mode
-  (define-key lsp-mode-map (kbd "C-x RET")
-              (lambda ()
-                (interactive)
-                (when (fboundp 'lsp-describe-thing-at-point)
-                  (lsp-describe-thing-at-point)
-                  (let ((help-window (get-buffer-window "*lsp-help*")))
-                    (when help-window
-                      (select-window help-window)))))))
+  (lsp-eldoc-enable-signature-help nil))
 
 (use-package lsp-ui
-  :ensure t
   :hook (lsp-mode . lsp-ui-mode)
   :custom
   (lsp-ui-sideline-enable t)
@@ -105,29 +164,35 @@
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-delay 0.1)
-  (lsp-ui-sideline-ignore-duplicate t)
   (lsp-ui-doc-enable t))
 
+(use-package treemacs)
+
 (use-package lsp-treemacs
-  :ensure t
-  :after treemacs
   :commands lsp-treemacs-errors-list)
 
+;; --------------------------------------------------
+;; Languages
+;; --------------------------------------------------
+
 (use-package go-mode
-  :ensure t
-  :mode "\\.go\\'"
   :hook (go-mode . display-line-numbers-mode)
   :config
-  (define-key go-mode-map (kbd "C-c l") 'gofmt))
+  (define-key go-mode-map (kbd "C-c C-f") #'gofmt))
 
-(use-package python-mode
-  :ensure t)
+(use-package python
+  :ensure nil
+  :hook (python-mode . (lambda ()
+                         (local-set-key (kbd "TAB") #'indent-for-tab-command)
+                         (setq indent-tabs-mode nil)
+                         (setq tab-width 4)
+                         (setq python-indent-offset 4))))
 
-(use-package magit
-  :ensure t)
+;; --------------------------------------------------
+;; UI / buffers / tools
+;; --------------------------------------------------
 
-(use-package seq
-  :ensure t)
+(use-package magit)
 
 (use-package ibuffer
   :commands ibuffer
@@ -136,15 +201,20 @@
               ("p" . find-file)))
 
 (use-package vertico
-  :ensure t
   :init (vertico-mode))
 
 (use-package marginalia
-  :ensure t
   :init (marginalia-mode))
 
-(use-package consult
-  :ensure t)
+(use-package consult)
+
+(add-to-list 'display-buffer-alist
+             '("\\*compilation\\*"
+               (display-buffer-reuse-window display-buffer-at-bottom)
+               (window-height . 0.3)))
+
+(setq compilation-scroll-output t)
 
 (provide 'config)
+
 ;;; config.el ends here

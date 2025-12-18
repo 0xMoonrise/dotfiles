@@ -1,4 +1,4 @@
-;; myfuncs.el --- Functions elisp emacs utils -*- lexical-binding: t; -*-
+;; utils.el --- Functions elisp emacs utils -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Custom Emacs functions utils & varity.
 ;;; Code:
@@ -34,14 +34,6 @@
   (org-todo "DONE")
   (org-set-property "DONE" (format-time-string "[%Y-%m-%d %a]")))
 
-(defun my/python-tab-complete-or-indent ()
-  "Try completion, fall back to indent in real Python buffers."
-  (interactive)
-  (let ((completion-fn (run-hook-with-args-until-success 'completion-at-point-functions)))
-    (if (and completion-fn (thing-at-point 'symbol))
-        (completion-at-point)
-      (indent-for-tab-command))))
-
 (defun my-insert-pair (pair)
   "Insert PAIR (a string of two chars) around region or at point."
   (interactive)
@@ -75,7 +67,7 @@
   (let* ((config-files '(("init.el" . "~/.emacs.d/init.el")
                          ("config.el" . "~/.emacs.d/lisp/config.el")
                          ("keybindings.el" . "~/.emacs.d/lisp/keybindings.el")
-                         ("myfuncs.el" . "~/.emacs.d/lisp/myfuncs.el")))
+                         ("utils.el" . "~/.emacs.d/lisp/utils.el")))
          (completion-extra-properties '(:annotation-function config-annot-fn))
          (choice (completing-read "Choose config file: " config-files))
          (file-path (expand-file-name (cdr (assoc choice config-files)))))
@@ -88,7 +80,7 @@
   (let ((annotations '(("init.el" . "Main init file")
                        ("config.el" . "User customizations")
                        ("keybindings.el" . "Custom keybindings")
-                       ("myfuncs.el" . "Utility functions")))
+                       ("utils.el" . "Utility code")))
         (max-width 15))
     (let* ((desc (cdr (assoc candidate annotations)))
            (padding (make-string (- max-width (length candidate)) ?\s)))
@@ -109,6 +101,5 @@
 :END:
 " task-title task-id created-date))))
 
-
-(provide 'myfuncs)
+(provide 'utils)
 ;;; myfuncs.el ends here

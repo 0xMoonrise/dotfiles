@@ -3,7 +3,7 @@
 ;;; Custom global keybindings.
 ;;; Code:
 
-(require 'myfuncs)
+(require 'utils)
 
 (global-set-key (kbd "M-/") 'comment-line)
 (global-set-key (kbd "M-d") 'xref-find-definitions)
@@ -16,12 +16,16 @@
 (global-set-key (kbd "C-x r") 'xref-go-back)
 (global-set-key (kbd "C-x f") 'lsp-find-implementation)
 (global-set-key (kbd "C-x s") 'lsp-find-references)
-(global-set-key (kbd "C-x c") (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-x x") (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-x q") 'delete-window)
 
-(global-set-key (kbd "C-c TAB") 'insert-literal-tab)
+(global-set-key (kbd "C-c c") 'completion-at-point)
 (global-set-key (kbd "C-c r") 'reload-init-file)
 (global-set-key (kbd "C-c f") 'lsp-ui-find-workspace-symbol)
 (global-set-key (kbd "C-c e") 'select-to-end-of-line)
+(global-set-key (kbd "C-c <right>") 'indent-rigidly-2-right)
+(global-set-key (kbd "C-c <left>") 'indent-rigidly-2-left)
+(global-set-key (kbd "C-c x") 'compile)
 
 (global-set-key (kbd "C-<down>") 'forward-paragraph)
 (global-set-key (kbd "C-<up>") 'backward-paragraph)
@@ -39,19 +43,6 @@
 (global-set-key (kbd "C-c 1") (lambda () (interactive) (my-insert-pair "()")))
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))
 (global-set-key (kbd "C-c 3") (lambda () (interactive) (my-insert-pair "[]")))
-
-(define-key org-mode-map (kbd "C-c a") 'org-insert-item)
-(define-key org-mode-map (kbd "C-c s") 'org-insert-heading)
-(define-key org-mode-map (kbd "C-c d") 'insert-org-date-with-brackets)
-(define-key org-mode-map (kbd "C-c w") 'org-meta-return)
-(define-key org-mode-map (kbd "C-l")   'org-insert-link)
-(define-key org-mode-map (kbd "C-c t") 'org-insert-task-with-id)
-(define-key org-mode-map (kbd "C-c f") 'org-mark-done-with-date)
-(define-key org-mode-map (kbd "C-c c") 'org-archive-subtree)
-
-(define-key org-mode-map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
-(define-key org-mode-map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
-(define-key org-mode-map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))
-
+  
 (provide 'keybindings)
 ;;; keybindings.el ends here
