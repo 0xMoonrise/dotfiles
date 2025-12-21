@@ -64,7 +64,12 @@
   (org-archive-location "./Archive/done.org::* Archived")
   (org-return-follows-link t)
   (org-hide-emphasis-markers t)
+  (org-hide-block-startup t)
+  (org-ellipsis " [...]")
+  (org-ellipsis-with-spaces t)
+  (org-ellipsis-after-blank-lines 1)
   :config
+  (set-face-underline 'org-ellipsis nil)
   (let ((map org-mode-map))
     (define-key map (kbd "C-c a") 'org-insert-item)
     (define-key map (kbd "C-c s") 'org-insert-heading)
@@ -208,6 +213,11 @@
                (window-height . 0.3)))
 
 (setq compilation-scroll-output t)
+
+(use-package yasnippet
+  :commands yas-global-mode
+  :init
+  (yas-global-mode 1))
 
 (provide 'config)
 
