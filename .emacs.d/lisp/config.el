@@ -135,6 +135,7 @@
   :init
   (global-flycheck-mode)
   :custom
+  (flycheck-check-syntax-automatically '(save))
   (flycheck-emacs-lisp-load-path 'inherit))
 
 ;; --------------------------------------------------
