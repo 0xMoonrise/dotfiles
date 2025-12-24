@@ -34,6 +34,7 @@
   (org-todo "DONE")
   (org-set-property "DONE" (format-time-string "[%Y-%m-%d %a]")))
 
+
 (defun my-insert-pair (pair)
   "Insert PAIR (a string of two chars) around region or at point."
   (interactive)
