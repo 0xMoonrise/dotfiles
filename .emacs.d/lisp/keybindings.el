@@ -16,7 +16,7 @@
 (global-set-key (kbd "C-x r") 'xref-go-back)
 (global-set-key (kbd "C-x f") 'lsp-find-implementation)
 (global-set-key (kbd "C-x s") 'lsp-find-references)
-(global-set-key (kbd "C-x x") (lambda () (interactive) (switch-to-buffer (other-buffer))))
+(global-set-key (kbd "C-x l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-x q") 'delete-window)
 
 (global-set-key (kbd "C-c c") 'completion-at-point)
@@ -26,6 +26,11 @@
 (global-set-key (kbd "C-c <right>") 'indent-rigidly-2-right)
 (global-set-key (kbd "C-c <left>") 'indent-rigidly-2-left)
 (global-set-key (kbd "C-c x") 'compile)
+
+(global-set-key (kbd "C-c <left>")  #'windmove-left)
+(global-set-key (kbd "C-c <right>") #'windmove-right)
+(global-set-key (kbd "C-c <up>")    #'windmove-up)
+(global-set-key (kbd "C-c <down>")  #'windmove-down)
 
 (global-set-key (kbd "C-<down>") 'forward-paragraph)
 (global-set-key (kbd "C-<up>") 'backward-paragraph)

@@ -52,9 +52,14 @@
       (backward-char 1))))
 
 (defun reload-init-file ()
-  "Reload the main init.el file."
+  "Reload init.el and all files in lisp/ ."
   (interactive)
-  (load-file (expand-file-name "init.el" user-emacs-directory)))
+  (load-file (expand-file-name "init.el" user-emacs-directory))
+  (dolist (file (directory-files
+                 (expand-file-name "lisp" user-emacs-directory)
+                 t "\\.el$"))
+    (load-file file)))
+
 
 (defun select-to-end-of-line ()
   "Select from point to end of line."
@@ -103,4 +108,5 @@
 " task-title task-id created-date))))
 
 (provide 'utils)
-;;; myfuncs.el ends here
+
+;;; utils.el ends here
