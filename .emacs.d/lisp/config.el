@@ -48,9 +48,11 @@
 (use-package sublime-themes
   :config
   (load-theme 'spolsky t)
+
   (set-face-attribute 'default nil
                       :background "black"
                       :foreground "white")
+
   (set-face-background 'vertical-border "gray20"))
 
 ;; --------------------------------------------------
@@ -109,6 +111,7 @@
   (corfu-auto nil)
   (corfu-cycle t)
   (corfu-preselect 'prompt)
+  (corfu-position 'point)
   :config
   (define-key corfu-map (kbd "TAB") #'corfu-next)
   (define-key corfu-map (kbd "<tab>") #'corfu-next)
@@ -136,7 +139,8 @@
   (global-flycheck-mode)
   :custom
   (flycheck-check-syntax-automatically '(save))
-  (flycheck-emacs-lisp-load-path 'inherit))
+  (flycheck-emacs-lisp-load-path 'inherit)
+  (flycheck-indication-mode nil))
 
 ;; --------------------------------------------------
 ;; LSP
@@ -151,10 +155,12 @@
   (lsp-completion-provider :none)
   (lsp-session-file "~/.emacs.d/.lsp-session-v1")
   (lsp-diagnostics-provider :flycheck)
+  (lsp-diagnostic-clean-after-change t)
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-signature-render-documentation nil)
   (lsp-signature-auto-activate nil)
-  (lsp-eldoc-enable-signature-help nil))
+  (lsp-eldoc-enable-signature-help nil)
+  (lsp-modeline-diagnostics-scope :workspace))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -164,7 +170,8 @@
   (lsp-ui-sideline-show-hover nil)
   (lsp-ui-sideline-show-code-actions nil)
   (lsp-ui-sideline-delay 0.1)
-  (lsp-ui-doc-enable t))
+  (lsp-ui-doc-enable t)
+  (lsp-ui-sideline-update-mode 'line))
 
 (use-package treemacs)
 

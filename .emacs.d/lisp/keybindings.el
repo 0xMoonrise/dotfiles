@@ -26,6 +26,7 @@
 (global-set-key (kbd "C-c <right>") 'indent-rigidly-2-right)
 (global-set-key (kbd "C-c <left>") 'indent-rigidly-2-left)
 (global-set-key (kbd "C-c x") 'compile)
+(global-set-key (kbd "C-c q") 'keyboard-escape-quit)
 
 (global-set-key (kbd "C-c <left>")  #'windmove-left)
 (global-set-key (kbd "C-c <right>") #'windmove-right)
