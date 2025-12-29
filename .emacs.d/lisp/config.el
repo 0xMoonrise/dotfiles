@@ -60,8 +60,6 @@
 ;; --------------------------------------------------
 
 (use-package org
-  :hook (org-mode . (lambda ()
-                      (setq indent-tabs-mode nil)))
   :custom
   (org-archive-location "./Archive/done.org::* Archived")
   (org-return-follows-link t)
@@ -70,6 +68,7 @@
   (org-ellipsis " [...]")
   (org-ellipsis-with-spaces t)
   (org-ellipsis-after-blank-lines 1)
+  (org-startup-indented t)
   :config
   (set-face-underline 'org-ellipsis nil)
   (let ((map org-mode-map))

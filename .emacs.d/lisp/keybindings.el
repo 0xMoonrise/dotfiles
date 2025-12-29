@@ -22,7 +22,7 @@
 (global-set-key (kbd "C-c c") 'completion-at-point)
 (global-set-key (kbd "C-c r") 'reload-init-file)
 (global-set-key (kbd "C-c f") 'lsp-ui-find-workspace-symbol)
-(global-set-key (kbd "C-c e") 'select-to-end-of-line)
+(global-set-key (kbd "C-c e") 'compile)
 (global-set-key (kbd "C-c <right>") 'indent-rigidly-2-right)
 (global-set-key (kbd "C-c <left>") 'indent-rigidly-2-left)
 (global-set-key (kbd "C-c x") 'compile)
