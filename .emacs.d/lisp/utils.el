@@ -93,7 +93,7 @@
       (concat padding desc))))
 
 (defun org-insert-task-with-id()
-  "Create a new org note."
+  "Create a new TODO entry."
   (interactive)
   (require 'org-id)
   (let ((task-title (read-string "Task name: "))
@@ -106,6 +106,22 @@
 :CREATED:  %s
 :END:
 " task-title task-id created-date))))
+
+(defun org-insert-entry ()
+  "Create a new org note file."
+  (interactive)
+  (require 'org-id)
+  (let* ((name (read-string "Name: "))
+        (id (org-id-new))
+        (created-date (format-time-string "[%Y-%m-%d %a]"))
+        (file-path (format "./Notes/%s.org" name)))
+    (org-insert-link name file-path name)
+    (write-region
+     (format ":PROPERTIES:\n:NAME:     %s\n:ID:       %s\n:CREATED:  %s\n:END:"
+             name id created-date)
+     				 nil
+     				 file-path
+     				 nil)))
 
 (provide 'utils)
 
