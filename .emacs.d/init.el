@@ -9,10 +9,10 @@
 
 (require 'package)
 
-(setq package-archives
-      '(("gnu"    . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-        ("melpa"  . "https://melpa.org/packages/")))
+(setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
 (unless package--initialized
   (package-initialize))
@@ -31,10 +31,9 @@
 (add-to-list 'load-path
              (expand-file-name "lisp" user-emacs-directory))
 
-(setq custom-file (expand-file-name "faces.el" user-emacs-directory))
-
-(require 'config)
 (require 'keybindings)
+(setq custom-file (expand-file-name "faces.el" user-emacs-directory))
+(require 'config)
 
 ;;; init.el ends here
 (put 'dired-find-alternate-file 'disabled nil)

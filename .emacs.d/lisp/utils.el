@@ -115,7 +115,7 @@
         (id (org-id-new))
         (created-date (format-time-string "[%Y-%m-%d %a]"))
         (file-path (format "./Notes/%s.org" name)))
-    (org-insert-link name file-path name)
+    (org-insert-link name file-path (concat created-date " " name))
     (write-region
      (format ":PROPERTIES:\n:NAME:     %s\n:ID:       %s\n:CREATED:  %s\n:END:"
              name id created-date)
