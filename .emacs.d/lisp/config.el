@@ -9,18 +9,25 @@
 
 (require 'utils)
 
-(setq-default electric-indent-mode t
-              fill-column 80
-              indent-tabs-mode nil
-              tab-width 2)
+(setq-default
+ fill-column 80
+ indent-tabs-mode nil
+ tab-width 2)
+
+(electric-indent-mode t)
 
 (electric-pair-mode 1)
 (global-display-line-numbers-mode 1)
+(setq-default indent-tabs-mode nil)
 
 (setq scroll-step 1
       scroll-conservatively 10000
       indent-line-function #'indent-relative)
 
+(use-package exec-path-from-shell
+  :ensure t
+  :config
+  (exec-path-from-shell-initialize))
 ;; --------------------------------------------------
 ;; Files, backups, history
 ;; --------------------------------------------------
@@ -77,24 +84,15 @@
     (define-key map (kbd "C-c d") 'insert-org-date-with-brackets)
     (define-key map (kbd "C-c w") 'org-meta-return)
     (define-key map (kbd "C-l")   'org-insert-link)
-    (define-key map (kbd "C-c t") 'org-insert-task-with-id)
+    (define-key map (kbd "C-c RET") 'org-insert-entry)
+		(define-key map (kbd "C-x RET") 'org-insert-task-with-id)
+    (define-key map (kbd "C-j") 'completion-at-point)
     (define-key map (kbd "C-c f") 'org-mark-done-with-date)
     (define-key map (kbd "C-c c") 'org-archive-subtree)
     (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
     (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
     (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
 
-
-;; --------------------------------------------------
-;; Spell checking
-;; --------------------------------------------------
-
-(use-package ispell
-  :ensure nil
-  :custom
-  (ispell-program-name "aspell")
-  (ispell-dictionary "en")
-  (ispell-extra-args '("--sug-mode=ultra")))
 
 ;; --------------------------------------------------
 ;; Completion (Corfu / Cape)
@@ -125,9 +123,15 @@
 
 (use-package cape
   :after corfu
+  :commands (cape-ispell)
   :init
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1))
 
 ;; --------------------------------------------------
 ;; Diagnostics
@@ -140,6 +144,11 @@
   (flycheck-check-syntax-automatically '(save))
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil))
+
+(use-package flycheck-eglot
+  :after (flycheck eglot)
+  :config
+  (global-flycheck-eglot-mode 1))
 
 ;; --------------------------------------------------
 ;; LSP
@@ -158,8 +167,7 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-signature-render-documentation nil)
   (lsp-signature-auto-activate nil)
-  (lsp-eldoc-enable-signature-help nil)
-  (lsp-modeline-diagnostics-scope :workspace))
+  (lsp-eldoc-enable-signature-help nil))
 
 (use-package lsp-ui
   :hook (lsp-mode . lsp-ui-mode)
@@ -182,9 +190,10 @@
 ;; --------------------------------------------------
 
 (use-package go-mode
-  :hook (go-mode . display-line-numbers-mode)
+  :ensure t
+  :hook ((before-save . gofmt-before-save))
   :config
-  (define-key go-mode-map (kbd "C-c C-f") #'gofmt))
+  (setq tab-width 2))
 
 (use-package python
   :ensure nil
@@ -316,10 +325,18 @@
 
 (setq compilation-scroll-output t)
 
-(use-package yasnippet
-  :commands yas-global-mode
-  :init
-  (yas-global-mode 1))
+(use-package yaml-mode)
+
+(use-package web-mode
+  :ensure t)
+
+(use-package dired
+  :ensure nil
+  :bind (:map dired-mode-map
+              ("C-w" . dired-up-directory)))
+
+(use-package drag-stuff
+  :ensure t)
 
 (provide 'config)
 

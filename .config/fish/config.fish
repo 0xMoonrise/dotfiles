@@ -13,16 +13,17 @@ end
 set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 
 # quality of life aliases
+alias emacs "emacsclient -t"
 
 # useful variables
 set -gx TERM xterm-256color
 set -gx INET eth0
 
 #Golang enviroment variables
-set -gx GOPATH $HOME/go
+set -x GOROOT /home/moonrise/sdk/go1.25.2
+set -x GOPATH /home/moonrise/go
+set -x PATH $GOROOT/bin $GOPATH/bin $PATH
 set -gx GOOS linux
-set -gx GOARCH arm64
-set -gx PATH $PATH $GOPATH/bin
 
 # functions and utility code
 function set-inet
@@ -60,3 +61,24 @@ function envsource
     end
   end < "$envfile"
 end
+
+function open_crypto
+  set disk "$argv[1]"
+  sudo cryptsetup luksOpen $disk vault
+  sudo mount /dev/mapper/vault /mnt/usb/  
+  sudo chown -R 1000:1000 /mnt/usb/
+end
+
+function close_crypto
+  set disk "$argv[1]"
+  sudo umount /mnt/usb/
+  sudo cryptsetup luksClose /dev/mapper/vault
+  sudo eject $disk
+end
+
+# Created by `pipx` on 2025-12-26 20:11:50
+set PATH $PATH /home/moonrise/.local/bin
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
