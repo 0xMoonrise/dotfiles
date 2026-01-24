@@ -145,10 +145,10 @@
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil))
 
-(use-package flycheck-eglot
-  :after (flycheck eglot)
-  :config
-  (global-flycheck-eglot-mode 1))
+;; (use-package flycheck-eglot
+;;   :after (flycheck eglot)
+;;   :config
+;;   (global-flycheck-eglot-mode 1))
 
 ;; --------------------------------------------------
 ;; LSP
@@ -180,10 +180,10 @@
   (lsp-ui-doc-enable t)
   (lsp-ui-sideline-update-mode 'line))
 
-(use-package treemacs)
+;; (use-package treemacs)
 
-(use-package lsp-treemacs
-  :commands lsp-treemacs-errors-list)
+;; (use-package lsp-treemacs
+;;   :commands lsp-treemacs-errors-list)
 
 ;; --------------------------------------------------
 ;; Languages
@@ -326,9 +326,6 @@
 (setq compilation-scroll-output t)
 
 (use-package yaml-mode)
-
-(use-package web-mode
-  :ensure t)
 
 (use-package dired
   :ensure nil

@@ -48,7 +48,7 @@
 (global-set-key (kbd "C-r") 'lsp-find-definition)
 (global-set-key (kbd "C-w") 'backward-kill-word)
 (global-set-key (kbd "C-]") 'open-config-file)
-(global-set-key (kbd "C-j") 'completion-at-point)
+(global-set-key (kbd "C-f") 'completion-at-point)
 
 (global-set-key (kbd "C-c 1") (lambda () (interactive) (my-insert-pair "()")))
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))

@@ -10,24 +10,19 @@ function fish_prompt
     echo "\$ "
 end
 
-set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
+set -e GOROOT
+set -gx PATH $PATH /usr/local/go/bin
+set -gx GOPATH $HOME/go
 
+set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 # quality of life aliases
-alias emacs "emacsclient -t"
 
 # useful variables
 set -gx TERM xterm-256color
-set -gx INET eth0
-
-#Golang enviroment variables
-set -x GOROOT /home/moonrise/sdk/go1.25.2
-set -x GOPATH /home/moonrise/go
-set -x PATH $GOROOT/bin $GOPATH/bin $PATH
-set -gx GOOS linux
 
 # functions and utility code
 function set-inet
-    tmux set-environment INET "$argv[1]"
+  tmux set-option -g update-environment "INET $argv[1]"
 end
 
 function download_pdf
