@@ -19,7 +19,6 @@ set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 
 # useful variables
 set -gx TERM xterm-256color
-
 # functions and utility code
 function set-inet
   tmux set-option -g update-environment "INET $argv[1]"
@@ -35,6 +34,10 @@ end
 
 if status is-interactive
 and not set -q TMUX
+and begin 
+    test $hostname = "raspberrypi"
+    or not set -q SSH_CONNECTION
+    end
     if tmux has-session -t base 2>/dev/null
         tmux attach
     else
