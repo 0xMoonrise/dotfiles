@@ -76,6 +76,9 @@
   (org-ellipsis-with-spaces t)
   (org-ellipsis-after-blank-lines 1)
   (org-startup-indented t)
+  (org-src-fontify-natively t)
+  (org-src-preserve-indentation nil)
+  (org-edit-src-content-indentation 0)
   :config
   (set-face-underline 'org-ellipsis nil)
   (let ((map org-mode-map))
@@ -141,6 +144,7 @@
   :init
   (global-flycheck-mode)
   :custom
+  (flycheck-go-build-install-deps t)
   (flycheck-check-syntax-automatically '(save))
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil))
@@ -207,7 +211,10 @@
 ;; UI / buffers / tools
 ;; --------------------------------------------------
 
-(use-package magit)
+(use-package magit
+  :config
+  (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1
+        magit-bury-buffer-function 'magit-restore-window-configuration))
 
 ;; taken from https://olddeuteronomy.github.io/post/emacs-ibuffer-config/
 (use-package ibuffer :ensure nil
@@ -310,10 +317,17 @@
                     (ibuffer-switch-to-saved-filter-groups "Main")))
 )
 
+(use-package verb
+  :ensure t
+  :config
+  (add-to-list 'org-src-lang-modes '("http" . verb)))
+
 (use-package vertico
+  :ensure t
   :init (vertico-mode))
 
 (use-package marginalia
+  :ensure t
   :init (marginalia-mode))
 
 (use-package consult)
@@ -335,6 +349,9 @@
 (use-package drag-stuff
   :ensure t)
 
+(use-package easy-kill
+  :ensure t)
+  
 (provide 'config)
 
 ;;; config.el ends here
