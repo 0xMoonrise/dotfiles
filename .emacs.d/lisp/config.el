@@ -28,6 +28,7 @@
   :ensure t
   :config
   (exec-path-from-shell-initialize))
+
 ;; --------------------------------------------------
 ;; Files, backups, history
 ;; --------------------------------------------------
@@ -117,6 +118,12 @@
   (define-key corfu-map (kbd "<tab>") #'corfu-next)
   (define-key corfu-map (kbd "S-TAB") #'corfu-previous)
   (define-key corfu-map (kbd "<backtab>") #'corfu-previous))
+
+(when (not (display-graphic-p))
+  (use-package corfu-terminal
+    :after corfu
+    :config
+    (corfu-terminal-mode +1)))
 
 (use-package cape
   :after corfu
@@ -211,94 +218,11 @@
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1
         magit-bury-buffer-function 'magit-restore-window-configuration))
 
-;; taken from https://olddeuteronomy.github.io/post/emacs-ibuffer-config/
-(use-package ibuffer
+(use-package ido
   :ensure nil
-  :custom
-  (ibuffer-expert t)
-  (ibuffer-display-summary nil)
-  (ibuffer-use-other-window nil)
-  (ibuffer-show-empty-filter-groups nil)
-  (ibuffer-default-sorting-mode 'filename/process)
-  (ibuffer-title-face 'font-lock-doc-face)
-  (ibuffer-use-header-line t)
-  (ibuffer-default-shrink-to-minimum-size nil)
-  (ibuffer-formats '((mark modified read-only locked " "
-                            (name 30 30 :left :elide)
-                            " "
-                            (size 9 -1 :right)
-                            " "
-                            (mode 16 16 :left :elide)
-                            " " filename-and-process)
-                     (mark " "
-                           (name 16 -1)
-                           " " filename)))
-  (ibuffer-saved-filter-groups
-   '(("Main"
-      ("Directories" (mode . dired-mode))
-      ("C++" (or (mode . c++-mode)
-                 (mode . c++-ts-mode)
-                 (mode . c-mode)
-                 (mode . c-ts-mode)
-                 (mode . c-or-c++-ts-mode)))
-      ("Python" (or (mode . python-ts-mode)
-                    (mode . c-mode)  ; ¿realmente quieres c-mode aquí? Quizá es python-mode
-                    (mode . python-mode)))
-      ("Go" (or (mode . go-mode)))
-      ("Build" (or (mode . make-mode)
-                   (mode . makefile-gmake-mode)
-                   (name . "^Makefile$")
-                   (mode . change-log-mode)))
-      ("Scripts" (or (mode . shell-script-mode)
-                     (mode . shell-mode)
-                     (mode . sh-mode)
-                     (mode . lua-mode)
-                     (mode . bat-mode)))
-      ("Config" (or (mode . conf-mode)
-                    (mode . conf-toml-mode)
-                    (mode . toml-ts-mode)
-                    (mode . conf-windows-mode)
-                    (name . "^\\.clangd$")
-                    (name . "^\\.gitignore$")
-                    (name . "^Doxyfile$")
-                    (name . "^config\\.toml$")
-                    (mode . yaml-mode)))
-      ("Web" (or (mode . mhtml-mode)
-                 (mode . html-mode)
-                 (mode . web-mode)
-                 (mode . nxml-mode)))
-      ("CSS" (or (mode . css-mode)
-                 (mode . sass-mode)))
-      ("JS" (or (mode . js-mode)
-                (mode . rjsx-mode)))
-      ("Markup" (or (mode . markdown-mode)
-                    (mode . adoc-mode)))
-      ("Org" (mode . org-mode))
-      ("LaTeX" (name . "\\.tex$"))  ; cuidado: debería ser (name . "\\.tex$")
-      ("Magit" (or (mode . magit-blame-mode)
-                   (mode . magit-cherry-mode)
-                   (mode . magit-diff-mode)
-                   (mode . magit-log-mode)
-                   (mode . magit-process-mode)
-                   (mode . magit-status-mode)))
-      ("Apps" (or (mode . elfeed-search-mode)
-                  (mode . elfeed-show-mode)))
-      ("Fundamental" (or (mode . fundamental-mode)
-                         (mode . text-mode)))
-      ("Emacs" (or (mode . emacs-lisp-mode)
-                   (name . "^\\*Help\\*$")
-                   (name . "^\\*Help\\*$")  ; duplicado, puedes eliminar uno
-                   (name . "^\\*Custom.*")
-                   (name . "^\\*Org Agenda\\*$")
-                   (name . "^\\*info\\*$")
-                   (name . "^\\*scratch\\*$")
-                   (name . "^\\*Backtrace\\*$")
-                   (name . "^\\*Messages\\*$"))))))
-
-  :hook
-  (ibuffer-mode . (lambda ()
-                    (ibuffer-switch-to-saved-filter-groups "Main"))))
-
+  :config
+  (ido-mode 'buffers)
+  (setq ido-enable-flex-matching t))
 
 (use-package verb
   :ensure t
