@@ -15,14 +15,11 @@
  tab-width 2)
 
 (electric-indent-mode t)
-
 (electric-pair-mode 1)
 (global-display-line-numbers-mode 1)
-(setq-default indent-tabs-mode nil)
 
 (setq scroll-step 1
-      scroll-conservatively 10000
-      indent-line-function #'indent-relative)
+      scroll-conservatively 10000)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -113,11 +110,16 @@
   (corfu-cycle t)
   (corfu-preselect 'prompt)
   (corfu-position 'point)
-  :config
-  (define-key corfu-map (kbd "TAB")   #'corfu-next)
-  (define-key corfu-map (kbd "<tab>") #'corfu-next)
-  (define-key corfu-map (kbd "S-TAB") #'corfu-previous)
-  (define-key corfu-map (kbd "<backtab>") #'corfu-previous))
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous)
+        ("RET" . corfu-insert))
+  :hook (emacs-lisp-mode . corfu-mode))
+
+(setq tab-always-indent 'complete)
 
 (when (not (display-graphic-p))
   (use-package corfu-terminal
@@ -127,10 +129,9 @@
 
 (use-package cape
   :after corfu
-  :commands (cape-ispell)
   :init
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev))
+  (add-to-list 'completion-at-point-functions #'cape-file t)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
 
 (use-package yasnippet
   :ensure t
@@ -159,9 +160,11 @@
 ;; --------------------------------------------------
 ;; LSP
 ;; --------------------------------------------------
-
 (use-package lsp-mode
-  :hook ((go-mode python-mode sql-mode) . lsp-deferred)
+  :hook ((python-mode . lsp)
+         (js-mode . lsp)
+         (c-mode . lsp)
+         (c++-mode . lsp))
   :commands lsp
   :init
   (setq gc-cons-threshold (* 200 1024 1024))
