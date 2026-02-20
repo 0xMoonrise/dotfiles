@@ -152,11 +152,6 @@
   (flycheck-error-list-minimum-level 'info)
   (flycheck-indication-mode nil))
 
-;; (use-package flycheck-eglot
-;;   :after (flycheck eglot)
-;;   :config
-;;   (global-flycheck-eglot-mode 1))
-
 ;; --------------------------------------------------
 ;; LSP
 ;; --------------------------------------------------
@@ -164,7 +159,8 @@
   :hook ((python-mode . lsp)
          (js-mode . lsp)
          (c-mode . lsp)
-         (c++-mode . lsp))
+         (c++-mode . lsp)
+         (go-mode . lsp))
   :commands lsp
   :init
   (setq gc-cons-threshold (* 200 1024 1024))
@@ -200,9 +196,10 @@
 
 (use-package go-mode
   :ensure t
-  :hook ((before-save . gofmt-before-save))
-  :config
-  (setq tab-width 2))
+  :hook (go-mode . (lambda ()
+                    (setq-local tab-width 2
+                                indent-tabs-mode t)
+                    (add-hook 'before-save-hook #'gofmt-before-save nil t))))
 
 (use-package python
   :ensure nil
