@@ -10,6 +10,8 @@ function fish_prompt
     echo "\$ "
 end
 
+bind \cd ''
+
 set -e GOROOT
 set -gx PATH $PATH /usr/local/go/bin
 set -gx GOPATH $HOME/go

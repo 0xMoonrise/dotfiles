@@ -17,6 +17,7 @@
 (electric-indent-mode t)
 (electric-pair-mode 1)
 (global-display-line-numbers-mode 1)
+(setq tab-always-indent 'complete)
 
 (setq scroll-step 1
       scroll-conservatively 10000)
@@ -63,6 +64,7 @@
 ;; --------------------------------------------------
 ;; Org mode
 ;; --------------------------------------------------
+(require 'org-tempo)
 
 (use-package org
   :custom
@@ -77,6 +79,7 @@
   (org-src-fontify-natively t)
   (org-src-preserve-indentation nil)
   (org-edit-src-content-indentation 0)
+  (org-startup-align-all-tables t)
   :config
   (set-face-underline 'org-ellipsis nil)
   (let ((map org-mode-map))
@@ -86,14 +89,13 @@
     (define-key map (kbd "C-c w") 'org-meta-return)
     (define-key map (kbd "C-l")   'org-insert-link)
     (define-key map (kbd "C-c RET") 'org-insert-entry)
-		(define-key map (kbd "C-x RET") 'org-insert-task-with-id)
+    (define-key map (kbd "C-x RET") 'org-insert-task-with-id)
     (define-key map (kbd "C-j") 'completion-at-point)
     (define-key map (kbd "C-c f") 'org-mark-done-with-date)
     (define-key map (kbd "C-c c") 'org-archive-subtree)
     (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
     (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
     (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
-
 
 ;; --------------------------------------------------
 ;; Completion (Corfu / Cape)
@@ -116,10 +118,7 @@
         ([tab] . corfu-next)
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous)
-        ("RET" . corfu-insert))
-  :hook (emacs-lisp-mode . corfu-mode))
-
-(setq tab-always-indent 'complete)
+        ("RET" . corfu-insert)))
 
 (when (not (display-graphic-p))
   (use-package corfu-terminal
@@ -130,8 +129,7 @@
 (use-package cape
   :after corfu
   :init
-  (add-to-list 'completion-at-point-functions #'cape-file t)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev t))
+  (add-to-list 'completion-at-point-functions #'cape-file t))
 
 (use-package yasnippet
   :ensure t
@@ -146,49 +144,35 @@
   :init
   (global-flycheck-mode)
   :custom
-  (flycheck-go-build-install-deps t)
   (flycheck-check-syntax-automatically '(save))
   (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-error-list-minimum-level 'info)
-  (flycheck-indication-mode nil))
+  (flycheck-indication-mode nil)
+  :config
+  ;; Go and Python diagnostics handled by eglot+flymake
+  (add-to-list 'flycheck-disabled-checkers 'go-build)
+  (add-to-list 'flycheck-disabled-checkers 'go-vet)
+  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+  (add-to-list 'flycheck-disabled-checkers 'python-pyright))
 
 ;; --------------------------------------------------
-;; LSP
+;; Eglot (Go, Python)
 ;; --------------------------------------------------
-(use-package lsp-mode
-  :hook ((python-mode . lsp)
-         (js-mode . lsp)
-         (c-mode . lsp)
-         (c++-mode . lsp)
-         (go-mode . lsp))
-  :commands lsp
-  :init
-  (setq gc-cons-threshold (* 200 1024 1024))
+
+(use-package eglot
+  :hook ((python-mode . eglot-ensure)
+         (go-mode . eglot-ensure))
   :custom
-  (lsp-completion-provider :none)
-  (lsp-session-file "~/.emacs.d/.lsp-session-v1")
-  (lsp-diagnostics-provider :flycheck)
-  (lsp-diagnostic-clean-after-change t)
-  (lsp-headerline-breadcrumb-enable nil)
-  (lsp-signature-render-documentation nil)
-  (lsp-signature-auto-activate nil)
-  (lsp-eldoc-enable-signature-help nil))
+  (eglot-autoshutdown t)
+  :config
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("pyright-langserver" "--stdio"))))
 
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-sideline-enable t)
-  (lsp-ui-sideline-show-diagnostics t)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-show-code-actions nil)
-  (lsp-ui-sideline-delay 0.1)
-  (lsp-ui-doc-enable t)
-  (lsp-ui-sideline-update-mode 'line))
+(add-hook 'eglot-managed-mode-hook
+          (lambda ()
+            (setq eldoc-documentation-functions
+                  (list #'eglot-hover-eldoc-function))
+            (flymake-mode 1)))
 
-;; (use-package treemacs)
-
-;; (use-package lsp-treemacs
-;;   :commands lsp-treemacs-errors-list)
 
 ;; --------------------------------------------------
 ;; Languages
@@ -197,14 +181,13 @@
 (use-package go-mode
   :ensure t
   :hook (go-mode . (lambda ()
-                    (setq-local tab-width 2
-                                indent-tabs-mode t)
-                    (add-hook 'before-save-hook #'gofmt-before-save nil t))))
+                     (setq-local tab-width 2
+                                 indent-tabs-mode t)
+                     (add-hook 'before-save-hook #'gofmt-before-save nil t))))
 
 (use-package python
   :ensure nil
   :hook (python-mode . (lambda ()
-                         (local-set-key (kbd "TAB") #'indent-for-tab-command)
                          (setq indent-tabs-mode nil)
                          (setq tab-width 4)
                          (setq python-indent-offset 4))))
@@ -253,7 +236,6 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-
 (add-to-list 'display-buffer-alist
              '("\\*compilation\\*"
                (display-buffer-reuse-window display-buffer-at-bottom)
@@ -273,7 +255,12 @@
 
 (use-package easy-kill
   :ensure t)
-  
+
+(use-package consult-eglot
+  :ensure t
+  :after (consult eglot))
+
+
 (provide 'config)
 
 ;;; config.el ends here

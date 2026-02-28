@@ -123,6 +123,32 @@
      				 file-path
      				 nil)))
 
+(defun my/open-daily-log ()
+  "Open today's log file, creating it if it doesn't exist."
+  (interactive)
+  (let* ((date-str (format-time-string "%Y-%m"))
+         (file-path (expand-file-name (format "~/journal/Logs/log-%s.org" date-str))))
+    (find-file file-path)
+    (when (= (buffer-size) 0)
+      (insert (format "* %s\n"
+                      (format-time-string "%A, %d %B %Y")))
+      (save-buffer))))
+
+(defun my/log-entry ()
+  "Insert a timestamped log entry, creating a day heading if needed."
+  (interactive)
+  (find-file (expand-file-name
+              (format "~/journal/Logs/log-%s.org"
+                      (format-time-string "%Y-%m"))))
+  (let ((today (format-time-string "* %A, %d %B %Y")))
+    (goto-char (point-max))
+    (unless (save-excursion
+              (re-search-backward (regexp-quote today) nil t))
+      (insert (format "\n%s\n" today)))
+    (goto-char (point-max))
+    (insert (format "\n** %s " (format-time-string "%H:%M"))))
+  (save-buffer))
+
 (provide 'utils)
 
 ;;; utils.el ends here
