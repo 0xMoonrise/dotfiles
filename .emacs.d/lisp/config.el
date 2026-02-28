@@ -163,16 +163,25 @@
          (go-mode . eglot-ensure))
   :custom
   (eglot-autoshutdown t)
+  (eglot-connect-timeout 120)
+  (eglot-sync-connect nil)
   :config
   (add-to-list 'eglot-server-programs
                '(python-mode . ("pyright-langserver" "--stdio"))))
 
 (add-hook 'eglot-managed-mode-hook
           (lambda ()
-            (setq eldoc-documentation-functions
-                  (list #'eglot-hover-eldoc-function))
-            (flymake-mode 1)))
+            (setq-local eldoc-documentation-functions
+                        (list #'eglot-hover-eldoc-function))
+            (flymake-mode 1)
+            (setq-local flymake-no-changes-timeout nil)
+            (add-hook 'after-save-hook #'flymake-start nil t)))
 
+(setq eldoc-print-after-edit nil)
+(advice-add 'eglot-hover-eldoc-function :around
+            (lambda (orig &rest args)
+              (when (eglot-current-server)
+                (apply orig args))))
 
 ;; --------------------------------------------------
 ;; Languages
@@ -226,9 +235,14 @@
 (use-package consult
   :ensure t
   :bind (("C-s" . consult-line)
-         ("C-x b" . consult-buffer)
+         ("C-c a" . consult-buffer)
          ("M-y" . consult-yank-pop)
-         ("M-g g" . consult-goto-line)))
+         ("M-g g" . consult-goto-line))
+  :config
+  (setq consult-buffer-filter
+        (append consult-buffer-filter
+                '("\\*.*\\*"))))
+
 
 (use-package orderless
   :ensure t
