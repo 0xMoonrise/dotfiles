@@ -6,6 +6,8 @@
 ;; --------------------------------------------------
 ;; Core editor defaults
 ;; --------------------------------------------------
+(eval-when-compile
+  (setq byte-compile-warnings '(not free-vars unresolved)))
 
 (require 'utils)
 
@@ -17,7 +19,6 @@
 (electric-indent-mode t)
 (electric-pair-mode 1)
 (global-display-line-numbers-mode 1)
-(setq tab-always-indent 'complete)
 
 (setq scroll-step 1
       scroll-conservatively 10000)
@@ -101,17 +102,15 @@
 ;; Completion (Corfu / Cape)
 ;; --------------------------------------------------
 
-(declare-function corfu-next "corfu")
-(declare-function corfu-previous "corfu")
-
 (use-package corfu
   :init
-  (global-corfu-mode)
+  (setq tab-always-indent 'complete)
   :custom
   (corfu-auto nil)
   (corfu-cycle t)
   (corfu-preselect 'prompt)
   (corfu-position 'point)
+  :hook ((eldoc-mode . corfu-mode))
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -120,11 +119,11 @@
         ([backtab] . corfu-previous)
         ("RET" . corfu-insert)))
 
-(when (not (display-graphic-p))
-  (use-package corfu-terminal
-    :after corfu
-    :config
-    (corfu-terminal-mode +1)))
+(use-package corfu-terminal
+  :ensure t
+  :config
+  (unless (display-graphic-p)
+    (funcall #'corfu-terminal-mode +1)))
 
 (use-package cape
   :after corfu

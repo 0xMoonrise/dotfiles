@@ -52,5 +52,6 @@
 
 (global-set-key (kbd "M-<up>")   'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
+
 (provide 'keybindings)
 ;;; keybindings.el ends here
