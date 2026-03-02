@@ -173,7 +173,7 @@
             (setq-local eldoc-documentation-functions
                         (list #'eglot-hover-eldoc-function))
             (flymake-mode 1)
-            (setq-local flymake-no-changes-timeout nil)
+            (setq-local flymake-no-changes-timeout 0.5)
             (add-hook 'after-save-hook #'flymake-start nil t)))
 
 (setq eldoc-print-after-edit nil)
@@ -207,7 +207,9 @@
 (use-package magit
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1
-        magit-bury-buffer-function 'magit-restore-window-configuration))
+        magit-bury-buffer-function 'magit-restore-window-configuration)
+  :bind (:map magit-status-mode-map
+              ("C-c d" . my/magit-copy-diff)))
 
 (use-package ido
   :ensure nil

@@ -149,6 +149,28 @@
     (insert (format "\n** %s " (format-time-string "%H:%M"))))
   (save-buffer))
 
+(defun my/magit-copy-diff ()
+  "Copy the full git diff (staged + unstaged) to clipboard via OSC 52."
+  (interactive)
+  (let* ((root (locate-dominating-file default-directory ".git"))
+         (_ (unless root (user-error "Not inside a git repository")))
+         (default-directory root)
+         (staged (shell-command-to-string "git diff --cached"))
+         (unstaged (shell-command-to-string "git diff"))
+         (diff (cond
+                ((and (string-empty-p staged) (string-empty-p unstaged))
+                 (user-error "No changes found in the repository"))
+                ((string-empty-p staged) unstaged)
+                ((string-empty-p unstaged) staged)
+                (t (concat "=== STAGED ===\n" staged
+                           "\n=== UNSTAGED ===\n" unstaged)))))
+    (kill-new diff)
+    (send-string-to-terminal
+     (concat "\033]52;c;"
+             (base64-encode-string (encode-coding-string diff 'utf-8) t)
+             "\a"))
+    (message "Diff copied to clipboard (%d chars)" (length diff))))
+
 (provide 'utils)
 
 ;;; utils.el ends here
