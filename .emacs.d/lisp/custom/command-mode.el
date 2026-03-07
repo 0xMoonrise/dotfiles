@@ -1,4 +1,13 @@
-;;; command-mode.el --- Syntax highlighting for shell commands in Org src blocks
+;;; nmap-mode.el --- Syntax highlighting for command highlight -*- lexical-binding: t -*-
+
+;; Author: 362026
+;; Version: 0.1
+;; Keywords: command, syntax, tools
+
+;;; Commentary:
+;; Major mode for command syntax highlight.
+
+;;; Code:
 
 (require 'sh-script) ; heredamos de sh-mode
 
@@ -19,7 +28,7 @@
     ("[|><&]+" . font-lock-warning-face)))
 
 (define-derived-mode command-mode sh-mode "Command"
-  "Major mode para resaltar comandos de shell/CLI en bloques Org."
+  "Major mode for highlighting shell/CLI commands in Org blocks."
   (setq font-lock-defaults '(command-mode-font-lock-keywords))
   (font-lock-mode 1))
 

@@ -6,20 +6,33 @@ if [ "$behind" -ne 0 ]; then
   exit 1
 fi
 
+function ensure_parent_dir()
+{
+  local target="$HOME/$1"
+  local parent_dir
+  parent_dir=$(dirname "$target")
+  if [ ! -d "$parent_dir" ]; then
+    echo "[INFO] Creating directory '$parent_dir'"
+    mkdir -p "$parent_dir"
+  fi
+}
+
 function set_link_directory()
 {
   echo "[INFO] Setting up '$1' directory"
-  find $1 -type f -print0 | while IFS= read -r -d $'\0' FILE; do
+  find $1 -type f -name ".gitignore" -prune -o -type f -print0 | while IFS= read -r -d $'\0' FILE; do
     echo "$FILE"
+    ensure_parent_dir "$FILE"
     ln -sf "${PWD}/$FILE" "$HOME/$FILE"
-  done  
+  done
 }
 
 echo "[INFO] Setting up $HOME"
 for FILE in * .[^.]*; do
   [[ $FILE != .* ]] && continue
-  [[ $FILE =~ ^(\.emacs\.d|\.git|\.config)$ ]] && continue
+  [[ $FILE =~ ^(\.emacs\.d|\.git|\.config|\.gitignore)$ ]] && continue
   echo "$FILE"
+  ensure_parent_dir "$FILE"
   ln -sf "${PWD}/$FILE" "$HOME/$FILE"
 done
 
