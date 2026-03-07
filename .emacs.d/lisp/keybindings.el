@@ -18,7 +18,15 @@
 (global-set-key (kbd "C-x s") 'xref-find-references)
 (global-set-key (kbd "C-x l") (lambda () (interactive) (switch-to-buffer (other-buffer))))
 (global-set-key (kbd "C-x q") 'delete-window)
+(global-set-key (kbd "C-x c") 'my/org-src-block-copy-osc52)
 
+(global-set-key (kbd "C-s") 'consult-line)
+(global-set-key (kbd "C-c a") 'consult-buffer)
+(global-set-key (kbd "M-y") 'consult-yank-pop)
+(global-set-key (kbd "M-g g") 'consult-goto-line)
+
+(global-set-key (kbd "C-c c") 'my/copy-region-to-clipboard-osc52)
+(global-set-key (kbd "C-c g") 'my/dlv-breakpoint)
 (global-set-key (kbd "C-c P") 'flymake-show-project-diagnostics)
 (global-set-key (kbd "C-c r") 'reload-init-file)
 (global-set-key (kbd "C-c f") 'consult-eglot-symbols)
@@ -52,6 +60,22 @@
 
 (global-set-key (kbd "M-<up>")   'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
+
+;; ── Org-mode keybindings ──────────────────────────────────────────────────────
+(with-eval-after-load 'org
+  (let ((map org-mode-map))
+    (define-key map (kbd "C-c i") 'org-insert-item)
+    (define-key map (kbd "C-c s") 'org-insert-heading)
+    (define-key map (kbd "C-c d") 'insert-org-date-with-brackets)
+    (define-key map (kbd "C-c w") 'org-meta-return)
+    (define-key map (kbd "C-l")   'org-insert-link)
+    (define-key map (kbd "C-c RET") 'org-insert-entry)
+    (define-key map (kbd "C-x RET") 'org-insert-task-with-id)
+    (define-key map (kbd "C-j") 'completion-at-point)
+    (define-key map (kbd "C-c f") 'org-mark-done-with-date)
+    (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
+    (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
+    (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
 
 (provide 'keybindings)
 ;;; keybindings.el ends here

@@ -11,6 +11,7 @@
 
 (require 'utils)
 
+
 (setq-default
  fill-column 80
  indent-tabs-mode nil
@@ -21,7 +22,8 @@
 (global-display-line-numbers-mode 1)
 
 (setq scroll-step 1
-      scroll-conservatively 10000)
+      scroll-conservatively 10000
+      vc-follow-symlinks t)
 
 (use-package exec-path-from-shell
   :ensure t
@@ -82,21 +84,7 @@
   (org-edit-src-content-indentation 0)
   (org-startup-align-all-tables t)
   :config
-  (set-face-underline 'org-ellipsis nil)
-  (let ((map org-mode-map))
-    (define-key map (kbd "C-c a") 'org-insert-item)
-    (define-key map (kbd "C-c s") 'org-insert-heading)
-    (define-key map (kbd "C-c d") 'insert-org-date-with-brackets)
-    (define-key map (kbd "C-c w") 'org-meta-return)
-    (define-key map (kbd "C-l")   'org-insert-link)
-    (define-key map (kbd "C-c RET") 'org-insert-entry)
-    (define-key map (kbd "C-x RET") 'org-insert-task-with-id)
-    (define-key map (kbd "C-j") 'completion-at-point)
-    (define-key map (kbd "C-c f") 'org-mark-done-with-date)
-    (define-key map (kbd "C-c c") 'org-archive-subtree)
-    (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
-    (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
-    (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
+  (set-face-underline 'org-ellipsis nil))
 
 ;; --------------------------------------------------
 ;; Completion (Corfu / Cape)
@@ -147,11 +135,11 @@
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil)
   :config
-  ;; Go and Python diagnostics handled by eglot+flymake
   (add-to-list 'flycheck-disabled-checkers 'go-build)
   (add-to-list 'flycheck-disabled-checkers 'go-vet)
   (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  (add-to-list 'flycheck-disabled-checkers 'python-pyright))
+  (add-to-list 'flycheck-disabled-checkers 'python-pyright)
+  (add-to-list 'flycheck-disabled-checkers 'org-lint))
 
 ;; --------------------------------------------------
 ;; Eglot (Go, Python)
@@ -235,10 +223,6 @@
 
 (use-package consult
   :ensure t
-  :bind (("C-s" . consult-line)
-         ("C-c a" . consult-buffer)
-         ("M-y" . consult-yank-pop)
-         ("M-g g" . consult-goto-line))
   :config
   (setq consult-buffer-filter
         (append consult-buffer-filter
@@ -275,7 +259,9 @@
   :ensure t
   :after (consult eglot))
 
-
+;; Custom
+(load-file "~/.emacs.d/lisp/custom/nmap-mode.el")
+(load-file "~/.emacs.d/lisp/custom/command-mode.el")
 (provide 'config)
 
 ;;; config.el ends here

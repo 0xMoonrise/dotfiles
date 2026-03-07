@@ -171,6 +171,47 @@
              "\a"))
     (message "Diff copied to clipboard (%d chars)" (length diff))))
 
+(defun my/dlv-breakpoint ()
+  "Copy current file:line to `kill-ring` and system clipboard via OSC 52."
+  (interactive)
+  (let* ((file (buffer-file-name))
+         (line (line-number-at-pos))
+         (breakpoint (format "%s:%d" (file-name-nondirectory file) line))
+         (encoded (base64-encode-string breakpoint t)))
+    (kill-new breakpoint)
+    (send-string-to-terminal (format "\e]52;c;%s\a" encoded))
+    (message "Breakpoint copied: %s" breakpoint)))
+
+
+(require 'org-element)
+
+(defun my/org-src-block-copy-osc52 ()
+  "Copy the content of the `org-mode` src block at point to clipboard via OSC 52."
+  (interactive)
+  (let ((element (org-element-at-point)))
+    (if (eq (org-element-type element) 'src-block)
+        (let* ((content (org-element-property :value element))
+               (content-trimmed (string-trim-right content "\n"))
+               (encoded (base64-encode-string
+                         (encode-coding-string content-trimmed 'utf-8)))
+               (b64 (replace-regexp-in-string "\n" "" encoded))
+               (osc52-seq (format "\033]52;c;%s\a" b64)))
+          (send-string-to-terminal osc52-seq)
+          (kill-new content-trimmed)
+          (message "Copied src block content to OSC 52 clipboard (%d chars)"
+                   (length content-trimmed)))
+      (message "Point is not inside a src block"))))
+
+(defun my/copy-region-to-clipboard-osc52 (start end)
+  "Copy the selected region `START` to `END` using OSC 52."
+  (interactive "r")
+  (let* ((text (buffer-substring-no-properties start end))
+         (b64  (base64-encode-string (encode-coding-string text 'utf-8) t))
+         (osc  (format "\e]52;c;%s\a" b64)))
+    (send-string-to-terminal osc)
+    (deactivate-mark)
+    (message "Copied to clipboard (%d characters)" (length text))))
+
 (provide 'utils)
 
 ;;; utils.el ends here
