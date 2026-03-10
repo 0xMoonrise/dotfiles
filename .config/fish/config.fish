@@ -10,11 +10,11 @@ function fish_prompt
     echo "\$ "
 end
 
-bind \cd ''
-
 set -e GOROOT
 set -gx PATH $PATH /usr/local/go/bin
 set -gx GOPATH $HOME/go
+
+bind \cd ''
 
 set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 # quality of life aliases

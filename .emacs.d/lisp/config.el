@@ -83,6 +83,7 @@
   (org-src-preserve-indentation nil)
   (org-edit-src-content-indentation 0)
   (org-startup-align-all-tables t)
+  (org-support-shift-select t)
   :config
   (set-face-underline 'org-ellipsis nil))
 
@@ -131,9 +132,9 @@
   :init
   (global-flycheck-mode)
   :custom
-  (flycheck-check-syntax-automatically '(save))
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil)
+  (flycheck-go-build-checker 'go-vet)
   :config
   (add-to-list 'flycheck-disabled-checkers 'go-build)
   (add-to-list 'flycheck-disabled-checkers 'go-vet)

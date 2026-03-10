@@ -185,6 +185,8 @@
 
 (require 'org-element)
 
+;;;  OSC 52
+
 (defun my/org-src-block-copy-osc52 ()
   "Copy the content of the `org-mode` src block at point to clipboard via OSC 52."
   (interactive)
