@@ -57,12 +57,13 @@
 (use-package sublime-themes
   :config
   (load-theme 'spolsky t)
-
+  (set-face-background 'vertical-border "gray20")
   (set-face-attribute 'default nil
                       :background "black"
                       :foreground "white")
 
-  (set-face-background 'vertical-border "gray20"))
+  (unless (display-graphic-p)
+    (set-terminal-parameter nil 'background-mode 'dark)))
 
 ;; --------------------------------------------------
 ;; Org mode
@@ -134,7 +135,7 @@
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
   (flycheck-indication-mode nil)
-  (flycheck-go-build-checker 'go-vet)
+  (flycheck-checkers '(go-golangci-lint))
   :config
   (add-to-list 'flycheck-disabled-checkers 'go-build)
   (add-to-list 'flycheck-disabled-checkers 'go-vet)

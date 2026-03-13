@@ -172,16 +172,20 @@
     (message "Diff copied to clipboard (%d chars)" (length diff))))
 
 (defun my/dlv-breakpoint ()
-  "Copy current file:line to `kill-ring` and system clipboard via OSC 52."
+  "Copy current file:line to kill-ring and system clipboard via OSC 52."
   (interactive)
   (let* ((file (buffer-file-name))
          (line (line-number-at-pos))
-         (breakpoint (format "%s:%d" (file-name-nondirectory file) line))
+         (project-root (locate-dominating-file file "go.mod"))
+         (relative-file (if project-root
+                            (file-relative-name file project-root)
+                          (file-name-nondirectory file)))
+         (breakpoint (format "%s:%d" relative-file line))
          (encoded (base64-encode-string breakpoint t)))
+
     (kill-new breakpoint)
     (send-string-to-terminal (format "\e]52;c;%s\a" encoded))
     (message "Breakpoint copied: %s" breakpoint)))
-
 
 (require 'org-element)
 
