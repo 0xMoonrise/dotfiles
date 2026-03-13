@@ -187,10 +187,39 @@
     (send-string-to-terminal (format "\e]52;c;%s\a" encoded))
     (message "Breakpoint copied: %s" breakpoint)))
 
-(require 'org-element)
+(defun my/open-file (filename)
+  "Open file, jumping to line if filename contains :N suffix."
+  (interactive "FFile: ")
+  (let* ((parts (split-string filename ":"))
+         (file (car parts))
+         (line (when (cadr parts) (string-to-number (cadr parts)))))
+    (find-file file)
+    (when (and line (> line 0))
+      (goto-line line)
+      (recenter))))
+
+(defvar my/jump-other-line nil
+  "Stores the other side of the jump pair.")
+
+(defun my/jump-to-line (line)
+  "Jump to LINE, toggling back and forth with C-l."
+  (interactive "nLine: ")
+  (setq my/jump-other-line (line-number-at-pos))
+  (goto-line line)
+  (recenter))
+
+(defun my/jump-toggle ()
+  "Toggle between current line and last jump target."
+  (interactive)
+  (if my/jump-other-line
+      (let ((return-to my/jump-other-line))
+        (setq my/jump-other-line (line-number-at-pos))
+        (goto-line return-to)
+        (recenter))
+    (message "No jump target set")))
 
 ;;;  OSC 52
-
+(require 'org-element)
 (defun my/org-src-block-copy-osc52 ()
   "Copy the content of the `org-mode` src block at point to clipboard via OSC 52."
   (interactive)

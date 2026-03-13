@@ -25,6 +25,8 @@
 (global-set-key (kbd "M-y") 'consult-yank-pop)
 (global-set-key (kbd "M-g g") 'consult-goto-line)
 
+(global-set-key (kbd "C-c l") 'my/jump-to-line)
+(global-set-key (kbd "C-l") 'my/jump-toggle)
 (global-set-key (kbd "C-c c") 'my/copy-region-to-clipboard-osc52)
 (global-set-key (kbd "C-c g") 'my/dlv-breakpoint)
 (global-set-key (kbd "C-c P") 'flymake-show-project-diagnostics)
@@ -48,7 +50,7 @@
 (global-set-key (kbd "C-k") 'kill-whole-line)
 (global-set-key (kbd "C-n") 'isearch-repeat-forward)
 (global-set-key (kbd "C-o") 'save-buffer)
-(global-set-key (kbd "C-p") 'find-file)
+(global-set-key (kbd "C-p") 'my/open-file)
 (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 (global-set-key (kbd "C-r") 'xref-find-definitions)
 (global-set-key (kbd "C-w") 'backward-kill-word)
