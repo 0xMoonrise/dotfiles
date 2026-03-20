@@ -11,6 +11,8 @@
 
 (require 'utils)
 
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
 
 (setq-default
  fill-column 80
@@ -147,6 +149,7 @@
 ;; Eglot (Go, Python)
 ;; --------------------------------------------------
 
+
 (use-package eglot
   :hook ((python-mode . eglot-ensure)
          (go-mode . eglot-ensure))
@@ -264,6 +267,7 @@
 ;; Custom
 (load-file "~/.emacs.d/lisp/custom/nmap-mode.el")
 (load-file "~/.emacs.d/lisp/custom/command-mode.el")
+
 (provide 'config)
 
 ;;; config.el ends here

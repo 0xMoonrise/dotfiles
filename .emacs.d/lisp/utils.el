@@ -189,10 +189,12 @@
 
 (defun my/open-file (filename)
   "Open file, jumping to line if filename contains :N suffix."
-  (interactive "FFile: ")
-  (let* ((parts (split-string filename ":"))
-         (file (car parts))
-         (line (when (cadr parts) (string-to-number (cadr parts)))))
+  (interactive "GFile: ")
+  (let* ((parts (and (string-match "\\(.*\\):\\([0-9]+\\)$" filename)
+                     (list (match-string 1 filename)
+                           (match-string 2 filename))))
+         (file (if parts (nth 0 parts) filename))
+         (line (when parts (string-to-number (nth 1 parts)))))
     (find-file file)
     (when (and line (> line 0))
       (goto-line line)
