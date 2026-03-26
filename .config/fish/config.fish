@@ -19,6 +19,9 @@ bind \cd ''
 set -x PKG_CONFIG_PATH /usr/local/lib/pkgconfig $PKG_CONFIG_PATH
 # quality of life aliases
 
+alias emacs='emacsclient --tty'
+alias emacsv='emacsclient --create-frame'
+
 # useful variables
 set -gx TERM xterm-256color
 # functions and utility code
@@ -37,7 +40,7 @@ end
 if status is-interactive
 and not set -q TMUX
 and begin 
-    test $hostname = "raspberrypi"
+    test $hostname = "server-01"
     or not set -q SSH_CONNECTION
     end
     if tmux has-session -t base 2>/dev/null
