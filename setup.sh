@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-behind=$(git rev-list --count HEAD..origin/main 2>/dev/null)
-if [ "$behind" -ne 0 ]; then
-  echo "[WARN] The repository is $behind commits behind. Use 'git pull' to update."
-  exit 1
-fi
-
 function ensure_parent_dir()
 {
   local target="$HOME/$1"

@@ -7,28 +7,30 @@
 ;; Package system bootstrap
 ;; --------------------------------------------------
 
-(require 'package)
-
-(setq package-archives '(("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("melpa" . "https://melpa.org/packages/")
-                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-(unless package--initialized
-  (package-initialize))
-
-(unless package-archive-contents
-  (package-refresh-contents))
-
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-
-(require 'use-package)
-(setq use-package-always-ensure t
-      load-prefer-newer t
+(setq load-prefer-newer t
       read-process-output-max (* 1024 1024))
 
 (add-to-list 'load-path
              (expand-file-name "lisp" user-emacs-directory))
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el"
+                         (or (bound-and-true-p straight-base-dir)
+                             user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+(setq straight-use-package-by-default t
+      use-package-always-demand nil)   
 
 (require 'keybindings)
 (setq custom-file (expand-file-name "faces.el" user-emacs-directory))
