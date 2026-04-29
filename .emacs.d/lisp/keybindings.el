@@ -20,10 +20,10 @@
 (global-set-key (kbd "C-x q") 'delete-window)
 (global-set-key (kbd "C-x c") 'my/org-src-block-copy-osc52)
 
+(global-set-key (kbd "M-y") 'consult-yank-pop)
 (global-set-key (kbd "C-s") 'consult-line)
 (global-set-key (kbd "C-c a") 'consult-buffer)
-(global-set-key (kbd "M-y") 'consult-yank-pop)
-(global-set-key (kbd "M-g g") 'consult-goto-line)
+(global-set-key (kbd "C-c d") 'consult-goto-line)
 
 (global-set-key (kbd "C-c l") 'my/jump-to-line)
 (global-set-key (kbd "C-l") 'my/jump-toggle)
