@@ -45,6 +45,7 @@
 (global-set-key (kbd "C-<down>") 'forward-paragraph)
 (global-set-key (kbd "C-<up>") 'backward-paragraph)
 
+(global-set-key (kbd "C-t") 'vterm)
 (global-set-key (kbd "C-a") 'move-beginning-of-line)
 (global-set-key (kbd "C-e") 'move-end-of-line)
 (global-set-key (kbd "C-k") 'kill-whole-line)

@@ -23,6 +23,8 @@
       vc-follow-symlinks t
       eldoc-print-after-edit nil)
 
+(scroll-bar-mode 0)
+(tool-bar-mode 0)
 (set-default 'tab-always-indent 'complete)
 (electric-pair-mode 1)
 (electric-indent-mode 0)
@@ -213,6 +215,25 @@
 ;; --------------------------------------------------
 ;; UI / buffers / tools
 ;; --------------------------------------------------
+
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000))
+
+(use-package ibuffer-project
+  :straight t
+  :hook (ibuffer . (lambda ()
+                     (setq ibuffer-filter-groups
+                           (ibuffer-project-generate-filter-groups))
+                     (setq ibuffer-filter-groups
+                           (seq-remove
+                            (lambda (group)
+                              (string-match-p "^Directory:" (car group)))
+                            ibuffer-filter-groups))
+                     (unless (eq ibuffer-sorting-mode 'project-file-relative)
+                       (ibuffer-do-sort-by-project-file-relative)))))
+
 (use-package magit
   :demand t
   :config
