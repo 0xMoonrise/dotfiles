@@ -240,14 +240,19 @@
       (message "Point is not inside a src block"))))
 
 (defun my/copy-region-to-clipboard-osc52 (start end)
-  "Copy the selected region `START` to `END` using OSC 52."
+  "Copy the selected region START to END using OSC 52 (terminal) or GUI clipboard."
   (interactive "r")
-  (let* ((text (buffer-substring-no-properties start end))
-         (b64  (base64-encode-string (encode-coding-string text 'utf-8) t))
-         (osc  (format "\e]52;c;%s\a" b64)))
-    (send-string-to-terminal osc)
+  (let* ((text (buffer-substring-no-properties start end)))
+    (if (display-graphic-p)
+        (progn
+          (gui-set-selection 'CLIPBOARD text)
+          (gui-set-selection 'PRIMARY text))
+      (let* ((b64 (base64-encode-string (encode-coding-string text 'utf-8) t))
+             (osc (format "\e]52;c;%s\a" b64)))
+        (send-string-to-terminal osc)))
     (deactivate-mark)
     (message "Copied to clipboard (%d characters)" (length text))))
+
 
 (provide 'utils)
 

@@ -168,15 +168,24 @@
 ;; --------------------------------------------------
 (use-package eglot
   :straight nil
-  :hook ((python-mode . eglot-ensure)
-         (go-mode     . eglot-ensure))
+  :hook ((python-mode    . eglot-ensure)
+         (python-ts-mode . eglot-ensure)
+         (go-mode        . eglot-ensure)
+         (go-ts-mode     . eglot-ensure)
+         (LaTeX-mode     . eglot-ensure))
   :custom
   (eglot-autoshutdown t)
   (eglot-connect-timeout 120)
   (eglot-sync-connect nil)
+  (eglot-events-buffer-size 0)
   :config
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio"))))
+               '(python-mode . ("pyright-langserver" "--stdio")))
+  (setq-default eglot-workspace-configuration
+  '(:gopls (:staticcheck t
+            :gofumpt t
+            :analyses (:shadow t
+                       :unusedparams t)))))
 
 (add-hook 'eglot-managed-mode-hook
           (lambda ()
@@ -212,6 +221,11 @@
 
 (use-package yaml-mode)
 
+(use-package auctex
+  :straight t
+  :defer t
+  :hook (LaTeX-mode . eglot-ensure))
+
 ;; --------------------------------------------------
 ;; UI / buffers / tools
 ;; --------------------------------------------------
@@ -220,6 +234,7 @@
   :commands vterm
   :config
   (setq vterm-max-scrollback 10000))
+
 
 (use-package ibuffer-project
   :straight t
@@ -239,6 +254,9 @@
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1
         magit-bury-buffer-function    'magit-restore-window-configuration)
+  (add-to-list 'display-buffer-alist
+               '("\\*magit-diff"
+                 (display-buffer-reuse-window display-buffer-same-window)))
   :bind (:map magit-status-mode-map
               ("C-c d" . my/magit-copy-diff)))
 

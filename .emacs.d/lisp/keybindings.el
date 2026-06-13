@@ -4,6 +4,23 @@
 ;;; Code:
 (require 'utils)
 
+(keymap-set doc-view-mode-map "C-<right>" #'doc-view-next-page)
+(keymap-set doc-view-mode-map "C-<left>" #'doc-view-previous-page)
+
+(keymap-set org-mode-map "C-<right>" #'org-next-visible-heading)
+(keymap-set org-mode-map "C-<left>" #'org-previous-visible-heading)
+(keymap-set org-mode-map "C-c i" #'org-insert-item)
+(keymap-set org-mode-map "C-c s" #'org-insert-heading)
+(keymap-set org-mode-map "C-c d" #'insert-org-date-with-brackets)
+(keymap-set org-mode-map "C-c w" #'org-meta-return)
+(keymap-set org-mode-map "C-l" #'org-insert-link)
+(keymap-set org-mode-map "C-c RET" #'org-insert-entry)
+(keymap-set org-mode-map "C-x RET" #'org-insert-task-with-id)
+(keymap-set org-mode-map "C-c f" #'org-mark-done-with-date)
+(keymap-set org-mode-map "C-c 1" (lambda () (interactive) (org-surround "*")))
+(keymap-set org-mode-map "C-c 2" (lambda () (interactive) (org-surround "_")))
+(keymap-set org-mode-map "C-c 3" (lambda () (interactive) (org-surround "/")))
+
 (global-set-key (kbd "M-/") 'comment-line)
 (global-set-key (kbd "M-d") 'xref-find-definitions)
 (global-set-key (kbd "M-f") 'eglot-format-buffer)
@@ -25,9 +42,11 @@
 (global-set-key (kbd "C-c a") 'consult-buffer)
 (global-set-key (kbd "C-c d") 'consult-goto-line)
 
+
 (global-set-key (kbd "C-c l") 'my/jump-to-line)
 (global-set-key (kbd "C-l") 'my/jump-toggle)
 (global-set-key (kbd "C-c c") 'my/copy-region-to-clipboard-osc52)
+(global-set-key (kbd "C-c v") 'yank-pop)
 (global-set-key (kbd "C-c g") 'my/dlv-breakpoint)
 (global-set-key (kbd "C-c P") 'flymake-show-project-diagnostics)
 (global-set-key (kbd "C-c r") 'reload-init-file)
@@ -60,25 +79,8 @@
 (global-set-key (kbd "C-c 1") (lambda () (interactive) (my-insert-pair "()")))
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (my-insert-pair "{}")))
 (global-set-key (kbd "C-c 3") (lambda () (interactive) (my-insert-pair "[]")))
-
 (global-set-key (kbd "M-<up>")   'drag-stuff-up)
 (global-set-key (kbd "M-<down>") 'drag-stuff-down)
-
-;; ── Org-mode keybindings ──────────────────────────────────────────────────────
-(with-eval-after-load 'org
-  (let ((map org-mode-map))
-    (define-key map (kbd "C-c i") 'org-insert-item)
-    (define-key map (kbd "C-c s") 'org-insert-heading)
-    (define-key map (kbd "C-c d") 'insert-org-date-with-brackets)
-    (define-key map (kbd "C-c w") 'org-meta-return)
-    (define-key map (kbd "C-l")   'org-insert-link)
-    (define-key map (kbd "C-c RET") 'org-insert-entry)
-    (define-key map (kbd "C-x RET") 'org-insert-task-with-id)
-    (define-key map (kbd "C-j") 'completion-at-point)
-    (define-key map (kbd "C-c f") 'org-mark-done-with-date)
-    (define-key map (kbd "C-c 1") (lambda () (interactive) (org-surround "*")))
-    (define-key map (kbd "C-c 2") (lambda () (interactive) (org-surround "_")))
-    (define-key map (kbd "C-c 3") (lambda () (interactive) (org-surround "/")))))
 
 (provide 'keybindings)
 ;;; keybindings.el ends here
