@@ -4,6 +4,8 @@
 ;;; Code:
 (require 'utils)
 
+(global-unset-key (kbd "C-d"))
+
 (global-set-key (kbd "M-/") 'comment-line)
 (global-set-key (kbd "M-d") 'xref-find-definitions)
 (global-set-key (kbd "M-f") 'eglot-format-buffer)
@@ -28,6 +30,7 @@
 (global-set-key (kbd "C-c l") 'my/jump-to-line)
 (global-set-key (kbd "C-l") 'my/jump-toggle)
 (global-set-key (kbd "C-c c") 'my/copy-region-to-clipboard-osc52)
+(global-set-key (kbd "C-c v") 'yank-pop)
 (global-set-key (kbd "C-c g") 'my/dlv-breakpoint)
 (global-set-key (kbd "C-c P") 'flymake-show-project-diagnostics)
 (global-set-key (kbd "C-c r") 'reload-init-file)
