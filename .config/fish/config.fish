@@ -33,10 +33,6 @@ function download_pdf
   wget $argv -P /opt/lectures/
 end
 
-function upload_archive
-  curl -v -X POST http://localhost:8080/upload -F "file=@$argv"
-end
-
 if status is-interactive
 and not set -q TMUX
 and begin 
