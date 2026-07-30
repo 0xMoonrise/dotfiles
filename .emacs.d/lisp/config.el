@@ -264,10 +264,6 @@
   :config
   (add-to-list 'org-src-lang-modes '("http" . verb)))
 
-(use-package arduino-mode
-  :straight t
-  :mode ("\\.ino\\'" . arduino-mode))
-
 (use-package drag-stuff)
 (use-package easy-kill)
 
