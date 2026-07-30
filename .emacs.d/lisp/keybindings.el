@@ -76,7 +76,7 @@ wraps in `with-eval-after-load' for the corresponding feature."
   ("C-c r" . reload-init-file)
   ("C-c f" . consult-eglot-symbols)
   ("C-c p" . consult-flymake)
-  ("C-c e" . compile)
+  ("C-c e" . flycheck-list-errors)
   ("C-c x" . compile)
   ("C-c q" . keyboard-escape-quit)
   ("C-c ]" . my/log-entry)

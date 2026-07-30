@@ -220,6 +220,12 @@
         (recenter))
     (message "No jump target set")))
 
+(define-advice flycheck-list-errors (:after (&rest _) my-flycheck-focus-errors)
+  "Focus the error list window after opening it."
+  (let ((error-window (get-buffer-window flycheck-error-list-buffer)))
+    (when error-window
+      (select-window error-window))))
+
 ;;;  OSC 52
 (require 'org-element)
 (defun my/org-src-block-copy-osc52 ()
