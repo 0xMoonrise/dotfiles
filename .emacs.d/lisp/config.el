@@ -149,19 +149,29 @@
 ;; --------------------------------------------------
 ;; Diagnostics
 ;; --------------------------------------------------
+(use-package flycheck-golangci-lint
+  :after flycheck
+  :demand t
+  :config
+  (flycheck-golangci-lint-setup))
+
 (use-package flycheck
-  :init
-  (global-flycheck-mode)
   :custom
   (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-indication-mode nil)
-  (flycheck-checkers '(go-golangci-lint))
+  (flycheck-checkers '(eglot-check golangci-lint))
+  (flycheck-annotate-background nil)
+  (flycheck-annotate-current-line-style 'eol)
+  (flycheck-annotate-other-lines-style nil)
   :config
   (add-to-list 'flycheck-disabled-checkers 'go-build)
   (add-to-list 'flycheck-disabled-checkers 'go-vet)
   (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (add-to-list 'flycheck-disabled-checkers 'python-pyright)
-  (add-to-list 'flycheck-disabled-checkers 'org-lint))
+  (add-to-list 'flycheck-disabled-checkers 'org-lint)
+  (flycheck-add-next-checker 'eglot-check 'golangci-lint)
+  (global-flycheck-mode)
+  (global-flycheck-eglot-mode)
+  (global-flycheck-annotate-mode))
 
 ;; --------------------------------------------------
 ;; Eglot (Go, Python)
@@ -181,10 +191,7 @@
 (add-hook 'eglot-managed-mode-hook
           (lambda ()
             (setq-local eldoc-documentation-functions
-                        (list #'eglot-hover-eldoc-function))
-            (flymake-mode 1)
-            (setq-local flymake-no-changes-timeout 0.5)
-            (add-hook 'after-save-hook #'flymake-start nil t)))
+                        (list #'eglot-hover-eldoc-function))))
 
 (advice-add 'eglot-hover-eldoc-function :around
             (lambda (orig &rest args)
