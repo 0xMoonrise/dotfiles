@@ -6,34 +6,59 @@
 ;; -march=skylake, you know that skylake is the identifier you should pass to
 ;; -mtune and -march.
 ;; E15 -> tigerlake
-;; Rasp -> armv8.2-a+fp+simd+crypto+dotprod
-(setq my-cpu-architecture "tigerlake")
+;; Rasp -> cortex-a76
+;; Architecture configuration
+;; Options: "x86_64", "arm", or nil for auto-detection
+;; Set to your current architecture or leave as nil for automatic detection
+(setq my-cpu-architecture-type 'arm)  ;; Change to 'x86_64 or nil for auto-detection
 
-;; `native-comp-compiler-options' specifies flags passed directly to the C
-;; compiler (for example, GCC) when compiling the Lisp-to-C output
-;; produced by the native compilation process. These flags affect code
-;; generation, optimization, and debugging information.
-(setq native-comp-compiler-options `(;; The most meaningful optimizations:
-                                     "-O2"
-                                     ,(format "-mtune=%s" my-cpu-architecture)
-                                     ,(format "-march=%s" my-cpu-architecture)
-                                     ;; Reduce .eln size and compilation
-                                     ;; overhead.
-                                     "-g0"
-                                     ;; Good defensive choice for Emacs
-                                     ;; stability.
-                                     "-fno-omit-frame-pointer"
-                                     "-fno-finite-math-only"))
+;; Automatic architecture detection function
+(defun my-detect-architecture ()
+  "Detect the system architecture based on system-configuration."
+  (cond
+   ((string-match-p "aarch64\\|arm" system-configuration) 'arm)
+   ((string-match-p "x86_64\\|amd64" system-configuration) 'x86_64)
+   (t 'unknown)))
 
-(setq native-comp-driver-options '(;; -Wl,-z,pack-relative-relocs compresses
-                                   ;; relocation tables to reduce file size and
-                                   ;; slightly improve load times.
-                                   "-Wl,-z,pack-relative-relocs"
-                                   ;; -Wl,-O2 applies standard linker-level
-                                   ;; optimizations (like string merging) to the
-                                   ;; generated shared object.
-                                   "-Wl,-O2"
-                                   ;; -Wl,--as-needed prevents the linker from
-                                   ;; recording dependencies on libraries that
-                                   ;; are not actually used by the code.
-                                   "-Wl,--as-needed"))
+;; Determine the effective architecture to use
+;; Uses manual setting if provided, otherwise falls back to auto-detection
+(defvar my-effective-architecture
+  (or my-cpu-architecture-type
+      (my-detect-architecture))
+  "Effective architecture used for native compilation.")
+
+;; Define microarchitecture targets based on the detected/specified architecture
+(defvar my-cpu-microarchitecture
+  (cond
+   ((eq my-effective-architecture 'arm)
+    "cortex-a76+crc+crypto")     ;; ARM/Raspberry Pi specific optimizations
+   ((eq my-effective-architecture 'x86_64)
+    "tigerlake")                 ;; Intel Tiger Lake (11th gen) and compatible
+   (t
+    "native"))                   ;; Generic fallback - let GCC detect best options
+  "CPU microarchitecture for compiler optimizations.")
+
+;; Set the CPU architecture variable used in compiler options
+(setq my-cpu-architecture my-cpu-microarchitecture)
+
+;; Compiler options for native compilation
+;; These flags are passed directly to GCC when compiling elisp to native code
+(setq native-comp-compiler-options
+      `("-O2"                     ;; Standard optimization level
+        ,(cond
+          ((eq my-effective-architecture 'arm)
+           (format "-mcpu=%s" my-cpu-architecture))     ;; ARM uses -mcpu flag
+          ((eq my-effective-architecture 'x86_64)
+           (format "-march=%s" my-cpu-architecture))    ;; x86_64 uses -march flag
+          (t
+           (format "-mtune=%s" my-cpu-architecture)))   ;; Fallback uses -mtune
+        "-g0"                     ;; No debug info - reduces .eln file size
+        "-fno-omit-frame-pointer" ;; Better debugging/profiling support
+        "-fno-finite-math-only")) ;; Conservative floating-point math (safer)
+
+;; Linker options for the native compilation driver
+;; These flags optimize the generated shared objects (.eln files)
+(setq native-comp-driver-options
+      '("-Wl,-z,pack-relative-relocs"  ;; Compress relocation tables (smaller files, faster loading)
+        "-Wl,-O2"                      ;; Standard linker optimizations (string merging, etc.)
+        "-Wl,--as-needed"))            ;; Only link against libraries actually used
