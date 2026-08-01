@@ -30,9 +30,9 @@
 
 (straight-use-package 'use-package)
 (setq straight-use-package-by-default t
-      use-package-always-demand nil)   
+      use-package-always-demand nil
+      custom-file (expand-file-name "faces.el" user-emacs-directory))
 
-(setq custom-file (expand-file-name "faces.el" user-emacs-directory))
 (require 'keybindings)
 (require 'config)
 

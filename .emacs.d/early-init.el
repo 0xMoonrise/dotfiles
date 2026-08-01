@@ -10,7 +10,7 @@
 ;; Architecture configuration
 ;; Options: "x86_64", "arm", or nil for auto-detection
 ;; Set to your current architecture or leave as nil for automatic detection
-(setq my-cpu-architecture-type 'arm)  ;; Change to 'x86_64 or nil for auto-detection
+(setq my-cpu-architecture-type 'x86_64)  ;; Change to 'x86_64 or nil for auto-detection
 
 ;; Automatic architecture detection function
 (defun my-detect-architecture ()
@@ -62,3 +62,24 @@
       '("-Wl,-z,pack-relative-relocs"  ;; Compress relocation tables (smaller files, faster loading)
         "-Wl,-O2"                      ;; Standard linker optimizations (string merging, etc.)
         "-Wl,--as-needed"))            ;; Only link against libraries actually used
+
+
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.5)
+
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-threshold 16000000
+                  gc-cons-percentage 0.1)
+            (garbage-collect)
+            (message "GC configured for interactive session")))
+
+(setq native-comp-async-report-warnings-errors nil
+      native-comp-async-query-on-exit nil
+      native-comp-async-jobs-number (max 1 (/ (num-processors) 2))
+      native-comp-verbose 0)
+
+(setq json-serializer 'json-serialize
+      json-parser 'json-parse-buffer)
+
+(setq sqlite-version-check t)

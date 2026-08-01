@@ -162,6 +162,7 @@
   (flycheck-annotate-background nil)
   (flycheck-annotate-current-line-style 'eol)
   (flycheck-annotate-other-lines-style nil)
+  (eldoc-echo-area-use-multiline-p nil)
   :config
   (add-to-list 'flycheck-disabled-checkers 'go-build)
   (add-to-list 'flycheck-disabled-checkers 'go-vet)
