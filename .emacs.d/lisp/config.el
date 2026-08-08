@@ -147,70 +147,38 @@
   (yas-global-mode 1))
 
 ;; --------------------------------------------------
-;; Diagnostics
-;; --------------------------------------------------
-(use-package flycheck-golangci-lint
-  :after flycheck
-  :demand t
-  :config
-  (flycheck-golangci-lint-setup))
-
-(use-package flycheck
-  :custom
-  (flycheck-emacs-lisp-load-path 'inherit)
-  (flycheck-checkers '(eglot-check golangci-lint))
-  (flycheck-annotate-background nil)
-  (flycheck-annotate-current-line-style 'eol)
-  (flycheck-annotate-other-lines-style nil)
-  (eldoc-echo-area-use-multiline-p nil)
-  :config
-  (add-to-list 'flycheck-disabled-checkers 'go-build)
-  (add-to-list 'flycheck-disabled-checkers 'go-vet)
-  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  (add-to-list 'flycheck-disabled-checkers 'python-pyright)
-  (add-to-list 'flycheck-disabled-checkers 'org-lint)
-  (flycheck-add-next-checker 'eglot-check 'golangci-lint)
-  (global-flycheck-mode)
-  (global-flycheck-eglot-mode)
-  (global-flycheck-annotate-mode))
-
-;; --------------------------------------------------
-;; Eglot (Go, Python)
+;; LSP con Eglot
 ;; --------------------------------------------------
 (use-package eglot
   :straight nil
-  :hook ((python-mode . eglot-ensure)
-         (go-mode     . eglot-ensure))
+  :hook ((go-mode python-mode) . eglot-ensure)
   :custom
   (eglot-autoshutdown t)
   (eglot-connect-timeout 120)
   (eglot-sync-connect nil)
+  (eglot-verbose nil)
   :config
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio"))))
+               '(python-mode . ("pyright-langserver" "--stdio")))
+  
+  (add-hook 'eglot-managed-mode-hook
+            (lambda ()
+              (setq-local eldoc-documentation-functions
+                          '(eglot-signature-eldoc-function)))))
 
-(add-hook 'eglot-managed-mode-hook
-          (lambda ()
-            (setq-local eldoc-documentation-functions
-                        (list #'eglot-hover-eldoc-function))))
-
-(advice-add 'eglot-hover-eldoc-function :around
-            (lambda (orig &rest args)
-              (when (eglot-current-server)
-                (apply orig args))))
-
-(use-package consult-eglot
-  :after (consult eglot))
 
 ;; --------------------------------------------------
-;; Languages
+;; Go
 ;; --------------------------------------------------
 (use-package go-mode
   :hook (go-mode . (lambda ()
                      (setq-local tab-width 2
                                  indent-tabs-mode t)
-                     (add-hook 'before-save-hook #'gofmt-before-save nil t))))
+                     (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
 
+;; --------------------------------------------------
+;; Python
+;; --------------------------------------------------
 (use-package python
   :straight nil
   :hook (python-mode . (lambda ()

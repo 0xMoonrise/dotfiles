@@ -10,9 +10,10 @@
 ;; Architecture configuration
 ;; Options: "x86_64", "arm", or nil for auto-detection
 ;; Set to your current architecture or leave as nil for automatic detection
-(setq my-cpu-architecture-type 'x86_64)  ;; Change to 'x86_64 or nil for auto-detection
+;;; Native compilation optimizations - Auto-detected architecture
 
-;; Automatic architecture detection function
+(setq my-cpu-architecture-type nil)
+
 (defun my-detect-architecture ()
   "Detect the system architecture based on system-configuration."
   (cond
@@ -20,49 +21,45 @@
    ((string-match-p "x86_64\\|amd64" system-configuration) 'x86_64)
    (t 'unknown)))
 
-;; Determine the effective architecture to use
-;; Uses manual setting if provided, otherwise falls back to auto-detection
 (defvar my-effective-architecture
   (or my-cpu-architecture-type
       (my-detect-architecture))
-  "Effective architecture used for native compilation.")
+  "Effective architecture used for native compilation.
+Set 'my-cpu-architecture-type' to override auto-detection.")
 
-;; Define microarchitecture targets based on the detected/specified architecture
 (defvar my-cpu-microarchitecture
   (cond
    ((eq my-effective-architecture 'arm)
-    "cortex-a76+crc+crypto")     ;; ARM/Raspberry Pi specific optimizations
+    "cortex-a76+crc+crypto")
    ((eq my-effective-architecture 'x86_64)
-    "tigerlake")                 ;; Intel Tiger Lake (11th gen) and compatible
+    "tigerlake")
    (t
-    "native"))                   ;; Generic fallback - let GCC detect best options
+    "native"))
   "CPU microarchitecture for compiler optimizations.")
 
-;; Set the CPU architecture variable used in compiler options
-(setq my-cpu-architecture my-cpu-microarchitecture)
-
-;; Compiler options for native compilation
-;; These flags are passed directly to GCC when compiling elisp to native code
 (setq native-comp-compiler-options
-      `("-O2"                     ;; Standard optimization level
+      `("-O2"
         ,(cond
           ((eq my-effective-architecture 'arm)
-           (format "-mcpu=%s" my-cpu-architecture))     ;; ARM uses -mcpu flag
+           (format "-mcpu=%s" my-cpu-microarchitecture))
           ((eq my-effective-architecture 'x86_64)
-           (format "-march=%s" my-cpu-architecture))    ;; x86_64 uses -march flag
+           (format "-march=%s" my-cpu-microarchitecture))
           (t
-           (format "-mtune=%s" my-cpu-architecture)))   ;; Fallback uses -mtune
-        "-g0"                     ;; No debug info - reduces .eln file size
-        "-fno-omit-frame-pointer" ;; Better debugging/profiling support
-        "-fno-finite-math-only")) ;; Conservative floating-point math (safer)
+           (format "-mtune=%s" my-cpu-microarchitecture)))
+        "-g0"
+        "-fno-omit-frame-pointer"
+        "-fno-finite-math-only"))
 
-;; Linker options for the native compilation driver
-;; These flags optimize the generated shared objects (.eln files)
 (setq native-comp-driver-options
-      '("-Wl,-z,pack-relative-relocs"  ;; Compress relocation tables (smaller files, faster loading)
-        "-Wl,-O2"                      ;; Standard linker optimizations (string merging, etc.)
-        "-Wl,--as-needed"))            ;; Only link against libraries actually used
+      '("-Wl,-z,pack-relative-relocs"
+        "-Wl,-O2"
+        "-Wl,--as-needed"))
 
+(message "Native compilation optimized for: %s"
+         (cond
+          ((eq my-effective-architecture 'arm) "ARM (Raspberry Pi/Apple Silicon)")
+          ((eq my-effective-architecture 'x86_64) "x86_64 (Intel/AMD)")
+          (t "Unknown/Generic - using 'native' fallback")))
 
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.5)
