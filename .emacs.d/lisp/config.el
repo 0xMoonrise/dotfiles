@@ -3,53 +3,15 @@
 ;;; UI, setup helpers, package, modes, company, LSP, themes, etc.
 ;;; Code:
 
-;; --------------------------------------------------
-;; Core editor defaults
-;; --------------------------------------------------
 (eval-when-compile
   (setq byte-compile-warnings '(not free-vars unresolved)))
 
 (require 'utils)
 (require 'ansi-color)
 
-(setq-default fill-column 80
-              indent-tabs-mode nil
-              tab-width 2)
-
-(setq scroll-step 1
-      scroll-conservatively 10000
-      sentence-end-double-space nil
-      create-lockfiles nil
-      vc-follow-symlinks t
-      eldoc-print-after-edit nil)
-
-(scroll-bar-mode 0)
-(tool-bar-mode 0)
-(set-default 'tab-always-indent 'complete)
-(electric-pair-mode 1)
-(electric-indent-mode 0)
-(global-display-line-numbers-mode 1)
-(savehist-mode 1)
-(repeat-mode 1)
-
-(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
-
 (use-package exec-path-from-shell
   :config
   (exec-path-from-shell-initialize))
-
-;; --------------------------------------------------
-;; Files, backups, history
-;; --------------------------------------------------
-(setq backup-by-copying t
-      vc-make-backup-files t
-      backup-directory-alist `(("." . "/tmp/emacs-backups")))
-
-(let ((auto-save-dir "/tmp/emacs-autosaves/"))
-  (unless (file-directory-p auto-save-dir)
-    (make-directory auto-save-dir t))
-  (setq auto-save-file-name-transforms
-        `((".*" ,auto-save-dir t))))
 
 (use-package recentf
   :straight nil
@@ -65,6 +27,7 @@
   (set-face-attribute 'default nil
                       :background "black"
                       :foreground "white")
+
   (unless (display-graphic-p)
     (set-terminal-parameter nil 'background-mode 'dark)))
 
@@ -162,9 +125,10 @@
                '(python-mode . ("pyright-langserver" "--stdio")))
   
   (add-hook 'eglot-managed-mode-hook
-            (lambda ()
-              (setq-local eldoc-documentation-functions
-                          '(eglot-signature-eldoc-function)))))
+          (lambda ()
+            (setq-local eldoc-documentation-functions
+                        '(eglot-signature-eldoc-function))
+            (setq-local eldoc-print-after-edit nil))))
 
 
 ;; --------------------------------------------------
@@ -215,8 +179,7 @@
   :config
   (setq magit-display-buffer-function 'magit-display-buffer-fullframe-status-topleft-v1
         magit-bury-buffer-function    'magit-restore-window-configuration)
-  :bind (:map magit-status-mode-map
-              ("C-c d" . my/magit-copy-diff)))
+)
 
 (use-package ido
   :straight nil

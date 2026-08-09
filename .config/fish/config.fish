@@ -79,9 +79,30 @@ function close_crypto
   sudo eject $disk
 end
 
+function ps-mem
+  if test (count $argv) -eq 0
+    echo "Usage: ps-mem <PID>"
+    return 1
+  end
+
+  set pid $argv[1]
+
+  if not ps -p $pid > /dev/null 2>&1
+    echo "Process $pid does not exist"
+    return 1
+  end
+
+  ps -p $pid -o pid,comm,rss,size,vsize,pmem,time --no-headers | \
+    while read pid comm rss size vsize pmem time
+      printf "PID: %-6s\n" "$pid"
+      printf "Command: %-10s\n" "$comm"
+      printf "RSS: %-8s\n" (numfmt --to=iec (math "$rss * 1024") 2>/dev/null)
+      printf "SIZE: %-8s\n" (numfmt --to=iec (math "$size * 1024") 2>/dev/null)
+      printf "VIRT: %-8s\n" (numfmt --to=iec (math "$vsize * 1024") 2>/dev/null)
+      printf "%%MEM: %-4s%%\n" "$pmem"
+      printf "TIME: %s\n" "$time"
+    end
+end
+
 # Created by `pipx` on 2025-12-26 20:11:50
 set PATH $PATH /home/moonrise/.local/bin
-
-# bun
-set --export BUN_INSTALL "$HOME/.bun"
-set --export PATH $BUN_INSTALL/bin $PATH

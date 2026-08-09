@@ -81,15 +81,17 @@ wraps in `with-eval-after-load' for the corresponding feature."
   ("C-c q" . keyboard-escape-quit)
   ("C-c ]" . my/log-entry)
   ("C-c [" . my/open-daily-log)
+  ("C-c d" . eldoc-doc-buffer)
+
+  ("C-c 1" . (lambda () (interactive) (my-insert-pair "()")))
+  ("C-c 2" . (lambda () (interactive) (my-insert-pair "{}")))
+  ("C-c 3" . (lambda () (interactive) (my-insert-pair "[]")))
 
   ("C-c <left>"  . windmove-left)
   ("C-c <right>" . windmove-right)
   ("C-c <up>"    . windmove-up)
-  ("C-c <down>"  . windmove-down)
+  ("C-c <down>"  . windmove-down))
 
-  ("C-c 1" . (lambda () (interactive) (my-insert-pair "()")))
-  ("C-c 2" . (lambda () (interactive) (my-insert-pair "{}")))
-  ("C-c 3" . (lambda () (interactive) (my-insert-pair "[]"))))
 
 (my/bind-keys org-mode-map
   ("C-c i"   . org-insert-item)
@@ -104,6 +106,9 @@ wraps in `with-eval-after-load' for the corresponding feature."
   ("C-c 1"   . (lambda () (interactive) (org-surround "*")))
   ("C-c 2"   . (lambda () (interactive) (org-surround "_")))
   ("C-c 3"   . (lambda () (interactive) (org-surround "/"))))
+
+(my/bind-keys magit-status-mode-map
+  ("C-c d" . my/magit-copy-diff))
 
 (provide 'keybindings)
 ;;; keybindings.el ends here
