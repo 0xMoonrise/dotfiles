@@ -120,16 +120,12 @@
   (eglot-connect-timeout 120)
   (eglot-sync-connect nil)
   (eglot-verbose nil)
+  (eglot-ignored-server-capabilities '(:signatureHelpProvider))
   :config
   (add-to-list 'eglot-server-programs
-               '(python-mode . ("pyright-langserver" "--stdio")))
-  
-  (add-hook 'eglot-managed-mode-hook
-          (lambda ()
-            (setq-local eldoc-documentation-functions
-                        '(eglot-signature-eldoc-function))
-            (setq-local eldoc-print-after-edit nil))))
-
+               '(go-mode . ("gopls" "-v")))
+  (add-to-list 'eglot-server-programs
+               '(python-mode . ("pyright-langserver" "--stdio"))))
 
 ;; --------------------------------------------------
 ;; Go
@@ -138,7 +134,8 @@
   :hook (go-mode . (lambda ()
                      (setq-local tab-width 2
                                  indent-tabs-mode t)
-                     (add-hook 'before-save-hook #'eglot-format-buffer nil t))))
+                     (add-hook 'before-save-hook
+                               #'eglot-format-buffer nil t))))
 
 ;; --------------------------------------------------
 ;; Python
