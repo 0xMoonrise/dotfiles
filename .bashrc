@@ -117,3 +117,7 @@ then
         tmux new-session -s base
     fi
 fi
+
+. "/home/moonrise/.deno/env"
+source /home/moonrise/.local/share/bash-completion/completions/deno.bash
+export PATH="$HOME/.deno/bin:$PATH"
