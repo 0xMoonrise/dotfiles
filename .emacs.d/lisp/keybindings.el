@@ -82,6 +82,7 @@ wraps in `with-eval-after-load' for the corresponding feature."
   ("C-c ]" . my/log-entry)
   ("C-c [" . my/open-daily-log)
   ("C-c d" . eldoc-doc-buffer)
+  ("C-c k" . 'kill-current-buffer)
 
   ("C-c 1" . (lambda () (interactive) (my-insert-pair "()")))
   ("C-c 2" . (lambda () (interactive) (my-insert-pair "{}")))

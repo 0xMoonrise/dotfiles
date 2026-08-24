@@ -156,7 +156,8 @@
 (use-package vterm
   :commands vterm
   :config
-  (setq vterm-max-scrollback 10000))
+  (setq vterm-max-scrollback 10000
+        vterm-buffer-name "terminal"))
 
 (use-package ibuffer-project
   :straight t

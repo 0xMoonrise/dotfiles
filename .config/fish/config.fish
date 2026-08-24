@@ -104,5 +104,9 @@ function ps-mem
     end
 end
 
+function get_mask
+    python3 -c 'import ipaddress,sys; print(ipaddress.IPv4Network(f"0.0.0.0/{sys.argv[1].lstrip("/")}").netmask)' $argv[1]
+end
+
 # Created by `pipx` on 2025-12-26 20:11:50
 set PATH $PATH /home/moonrise/.local/bin
