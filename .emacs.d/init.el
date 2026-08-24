@@ -3,10 +3,6 @@
 ;;; Emacs configuration entry point.
 ;;; Code:
 
-;; --------------------------------------------------
-;; 1. Basic Settings
-;; --------------------------------------------------
-
 (setq load-prefer-newer t
       read-process-output-max (* 1024 1024))
 

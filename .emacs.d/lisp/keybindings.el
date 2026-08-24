@@ -53,6 +53,7 @@ wraps in `with-eval-after-load' for the corresponding feature."
   ("C-r" . xref-find-definitions)
   ("C-w" . backward-kill-word)
   ("C-]" . open-config-file)
+  ("C-v" . yank)
 
   ("C-<down>" . forward-paragraph)
   ("C-<up>" . backward-paragraph)

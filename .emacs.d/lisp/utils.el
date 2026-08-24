@@ -5,6 +5,15 @@
 
 (require 'org)
 
+(defun my/clipboard-copy-smart (text)
+  "Copy TEXT to the kill-ring and system clipboard.
+Uses OSC 52 in terminal, and the normal GUI clipboard mechanism
+when running under a graphical display."
+  (kill-new text)
+  (unless (display-graphic-p)
+    (let ((encoded (base64-encode-string (encode-coding-string text 'utf-8) t)))
+      (send-string-to-terminal (format "\e]52;c;%s\a" encoded)))))
+
 (defun insert-org-date-with-brackets ()
   "Insert a date in the format [YYYY-MM-DD DDD] with calendar selection."
   (interactive)
@@ -164,11 +173,7 @@
                 ((string-empty-p unstaged) staged)
                 (t (concat "=== STAGED ===\n" staged
                            "\n=== UNSTAGED ===\n" unstaged)))))
-    (kill-new diff)
-    (send-string-to-terminal
-     (concat "\033]52;c;"
-             (base64-encode-string (encode-coding-string diff 'utf-8) t)
-             "\a"))
+    (my/clipboard-copy-smart diff)
     (message "Diff copied to clipboard (%d chars)" (length diff))))
 
 (defun my/dlv-breakpoint ()
@@ -178,13 +183,10 @@
          (line (line-number-at-pos))
          (project-root (locate-dominating-file file "go.mod"))
          (relative-file (if project-root
-                            (file-relative-name file project-root)
-                          (file-name-nondirectory file)))
-         (breakpoint (format "%s:%d" relative-file line))
-         (encoded (base64-encode-string breakpoint t)))
-
-    (kill-new breakpoint)
-    (send-string-to-terminal (format "\e]52;c;%s\a" encoded))
+                             (file-relative-name file project-root)
+                           (file-name-nondirectory file)))
+         (breakpoint (format "%s:%d" relative-file line)))
+    (my/clipboard-copy-smart breakpoint)
     (message "Breakpoint copied: %s" breakpoint)))
 
 (defun my/open-file (filename)
@@ -228,30 +230,28 @@
 
 ;;;  OSC 52
 (require 'org-element)
+
 (defun my/org-src-block-copy-osc52 ()
-  "Copy the content of the `org-mode` src block at point to clipboard via OSC 52."
+  "Copy the content of the `org-mode' src block at point to the clipboard.
+Uses OSC 52 when running in a terminal, and the normal GUI
+clipboard mechanism when running under a graphical display."
   (interactive)
   (let ((element (org-element-at-point)))
     (if (eq (org-element-type element) 'src-block)
         (let* ((content (org-element-property :value element))
-               (content-trimmed (string-trim-right content "\n"))
-               (encoded (base64-encode-string
-                         (encode-coding-string content-trimmed 'utf-8)))
-               (b64 (replace-regexp-in-string "\n" "" encoded))
-               (osc52-seq (format "\033]52;c;%s\a" b64)))
-          (send-string-to-terminal osc52-seq)
-          (kill-new content-trimmed)
-          (message "Copied src block content to OSC 52 clipboard (%d chars)"
+               (content-trimmed (string-trim-right content "\n")))
+          (my/clipboard-copy-smart content-trimmed)
+          (message "Copied src block content to clipboard (%d chars)"
                    (length content-trimmed)))
       (message "Point is not inside a src block"))))
 
 (defun my/copy-region-to-clipboard-osc52 (start end)
-  "Copy the selected region `START` to `END` using OSC 52."
+  "Copy the region from START to END to the system clipboard.
+Uses OSC 52 when running in a terminal, and the normal GUI
+clipboard mechanism when running under a graphical display."
   (interactive "r")
-  (let* ((text (buffer-substring-no-properties start end))
-         (b64  (base64-encode-string (encode-coding-string text 'utf-8) t))
-         (osc  (format "\e]52;c;%s\a" b64)))
-    (send-string-to-terminal osc)
+  (let ((text (buffer-substring-no-properties start end)))
+    (my/clipboard-copy-smart text)
     (deactivate-mark)
     (message "Copied to clipboard (%d characters)" (length text))))
 
