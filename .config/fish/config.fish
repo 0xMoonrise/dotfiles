@@ -108,5 +108,15 @@ function get_mask
     python3 -c 'import ipaddress,sys; print(ipaddress.IPv4Network(f"0.0.0.0/{sys.argv[1].lstrip("/")}").netmask)' $argv[1]
 end
 
+function get_mac
+    python3 -c "
+	import sys
+	import random
+	oui = sys.argv[1]  # reemplaza con el OUI real de tu celular
+	suffix = ':'.join(f'{random.randint(0,255):02x}' for _ in range(3))
+	print(f'{oui}:{suffix}')
+	" $argv[1]
+end
+
 # Created by `pipx` on 2025-12-26 20:11:50
 set PATH $PATH /home/moonrise/.local/bin
