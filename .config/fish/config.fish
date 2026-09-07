@@ -2,12 +2,30 @@
 set fish_greeting ""
 
 function fish_prompt
-  set dir (basename $PWD)
-  if test $PWD = $HOME
-    set dir "~"
-  end
-    echo ["$USER"@$hostname $dir]
-    echo "\$ "
+    set dir (basename $PWD)
+    if test $PWD = $HOME
+        set dir "~"
+    end
+    
+    echo -n "["
+    set_color green
+    echo -n "$USER"
+    set_color yellow
+    echo -n "@"
+
+    switch $hostname
+        case laptop-01
+            set_color cyan
+        case server-01
+            set_color red
+        case '*'
+            set_color yellow
+    end
+    echo -n "$hostname"
+    set_color normal
+
+    echo -n " $dir]"
+    echo -n "\$ "
 end
 
 set -e GOROOT
@@ -117,6 +135,3 @@ function get_mac
 	print(f'{oui}:{suffix}')
 	" $argv[1]
 end
-
-# Created by `pipx` on 2025-12-26 20:11:50
-set PATH $PATH /home/moonrise/.local/bin
